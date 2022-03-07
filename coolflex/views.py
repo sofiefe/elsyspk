@@ -22,18 +22,14 @@ class CoolUserList(ListView):
     model = CoolUser
     template = 'coolflex/home.html'
 
-    def head(self, *args, **kwargs):
-        user_list = self.get_queryset().order_by("first_name")
-        response = HttpResponse(
-            user_list
-        )
+    #def head(self, *args, **kwargs):
+        #user_list = self.all().order_by("first_name")
+        #response = HttpResponse(user_list)
 
 class DesignList(ListView):
     model = Design
     template = 'coolflex/design.html'
 
-    def head(self, *args, **kwargs):
-        design_list = self.get_queryset()
-        response = HttpResponse(
-            design_list
-        )
+    #def head(self, *args, **kwargs):
+        #design_list = self.get_queryset()
+        #response = HttpResponse(design_list)
