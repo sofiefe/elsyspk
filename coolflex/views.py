@@ -15,7 +15,7 @@ def home(request):
     return render(request, "coolflex/home.html", context)
 
 nicknames = [
-    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl",
+    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh"
 ]
 
 class CoolUserList(ListView):
