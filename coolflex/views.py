@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 import random
-from models import CoolUser, Design
+from .models import CoolUser, Design
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -15,7 +15,7 @@ def home(request):
     return render(request, "coolflex/home.html", context)
 
 nicknames = [
-    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl",
+    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
 ]
 
 class CoolUserList(ListView):
