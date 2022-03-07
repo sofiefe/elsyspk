@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 import random
-from models import CoolUser, Design
+from .models import CoolUser, Design
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
