@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .models import CoolUser, Klasse, User
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,8 +28,8 @@ nicknames = [
 ]
 
 @login_required
-def profile(request):
-  return render(request, "coolflex/profile.html", name="profile")
+def frontpage(request):
+  return render(request, "coolflex/frontpage.html")
 
 def register_request(request):
 	if request.method == "POST":
@@ -38,7 +38,7 @@ def register_request(request):
 			user = form.save()
 			login(request, user)
 			messages.success(request, "Registration successful." )
-			return redirect("home")
+			return redirect("frontpage")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	form = NewUserForm()
 	return render (request=request, template_name="coolflex/register.html", context={"register_form":form})
@@ -54,11 +54,16 @@ def login_request(request):
 			if user is not None:
 				login(request, user)
 				messages.info(request, f"You are now logged in as {username}.")
-				return redirect("home")
+				return redirect("frontpage")
 			else:
 				messages.error(request,"Invalid username or password.")
 		else:
 			messages.error(request,"Invalid username or password.")
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
+
+def logout_view(request):
+  logout(request)
+  return redirect("home")
+
 

@@ -1,5 +1,10 @@
 {% extends 'coolflex/base.html' %}
-
+{% load static %}
 {% block content %}
 <h1>Homepage</h1>
+<h2>Om oss:</h2>
+<p>Beskrivelse av prosjektet og coolflex</p>
+
+<a class="login-button" href="{% url 'login' %}">Log in</a> <br>
+<a class="button" href="{% url 'register' %}">Register</a>
 {% endblock %}
