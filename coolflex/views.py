@@ -1,13 +1,21 @@
-from msilib.schema import ListView
-from unicodedata import name
+import random
+#from unicodedata import name
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
-import random
-from .models import CoolUser, Design, User
+from .models import CoolUser, Klasse, User
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import UserForm
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import AuthenticationForm
+from django.urls import reverse_lazy
+from django.contrib import messages
+from .forms import NewUserForm
+
+ 
 
 # Create your views here.
 def home(request):
@@ -19,18 +27,38 @@ nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
 ]
 
-class CoolUserList(ListView):
-    model = CoolUser
-    template = 'coolflex/home.html'
+@login_required
+def profile(request):
+  return render(request, "coolflex/profile.html", name="profile")
 
-   
+def register_request(request):
+	if request.method == "POST":
+		form = NewUserForm(request.POST)
+		if form.is_valid():
+			user = form.save()
+			login(request, user)
+			messages.success(request, "Registration successful." )
+			return redirect("home")
+		messages.error(request, "Unsuccessful registration. Invalid information.")
+	form = NewUserForm()
+	return render (request=request, template_name="coolflex/register.html", context={"register_form":form})
 
-class DesignList(ListView):
-    model = Design
-    template = 'coolflex/design.html'
 
+def login_request(request):
+	if request.method == "POST":
+		form = AuthenticationForm(request, data=request.POST)
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				login(request, user)
+				messages.info(request, f"You are now logged in as {username}.")
+				return redirect("home")
+			else:
+				messages.error(request,"Invalid username or password.")
+		else:
+			messages.error(request,"Invalid username or password.")
+	form = AuthenticationForm()
+	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
-class UserFormCreate(CreateView):
-    model = User
-    template_name = "cool/userform_template.html"
-    form_class = UserForm
