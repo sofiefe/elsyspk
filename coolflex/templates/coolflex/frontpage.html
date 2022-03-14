@@ -2,6 +2,26 @@
 {% load static %}
 
 {% block content %}
-<h1>Frontpage</h1>
+<h1>Klasser</h1>
+<table>
+    <thead>
+      <tr>
+        <th>klassetall</th>
+        <th>klassebokstav</th>
+        <th>status</th>
+        <th>info</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for klasse in klasse_list %}
+        <tr> 
+          <td> {{ klasse.grade }} </td>
+          <td> {{ klasse.letter }} </td>
+          <td>  </td>
+          <td> <a href="{% url 'klasse' klasse.navn|slugify %}">info</a> </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    </table>
 <a class="logout-button" href="{% url 'logout' %}">Log out</a>
 {% endblock %}

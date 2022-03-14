@@ -1,0 +1,32 @@
+{% extends 'coolflex/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<h1>{{ klassenavn }}</h1>
+<table>
+    <thead>
+      <tr>
+        <th>navn</th>
+        <th>etternavn</th>
+        <th>status</th>
+        <th>tidspunkt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for user in cool_user_list %}
+        {% if user.klasse|lower == klassenavn %}
+        <tr>
+            <td>  {{ user.first_name }} </td>
+            <td>  {{ user.last_name }} </td>
+            <td> status </td>
+            <td> tidspunkt </td>
+        </tr>
+        {%endif%}
+        {%endfor%}
+      </tr>
+    </tbody>
+    </table>
+<a class="logout-button" href="{% url 'logout' %}">Log out</a>
+{% endblock %}
