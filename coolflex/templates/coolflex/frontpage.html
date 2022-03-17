@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<a class="logout-button" href="{% url 'logout' %}">Log out</a> <br>
 <h1>Klasser</h1>
 <table>
     <thead>
@@ -23,5 +24,5 @@
       {% endfor %}
     </tbody>
     </table>
-<a class="logout-button" href="{% url 'logout' %}">Log out</a>
+    <a href="{% url 'createklasse' %}">Ny klasse</a>
 {% endblock %}

@@ -1,5 +1,6 @@
+from pyexpat import model
 from django import forms
-from .models import User
+from .models import User, Klasse, CoolUser, DataCoolBox
 from django.contrib.auth.forms import UserCreationForm
 
 class NewUserForm(UserCreationForm):
@@ -15,3 +16,8 @@ class NewUserForm(UserCreationForm):
 		if commit:
 			user.save()
 		return user
+
+class NewKlasseForm(forms.ModelForm):
+	class Meta:
+		model = Klasse
+		fields = "__all__"

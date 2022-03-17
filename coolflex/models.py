@@ -6,19 +6,19 @@ from django.contrib.auth.models import User
 
 class Klasse(models.Model):
     navn = models.CharField(max_length=2, default=None)
-    #grade_number = models.IntegerField(max_length=1, default=1)
-    #bokstav = models.CharField(max_length=1, default="A")
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    #funksjoner for å hente info
     def get_grade(self):
         grade = int(self.navn[0])
         return grade
-    
     def get_letter(self):
         letter = self.navn[1]
         return letter
-    
     def __str__(self):
         return self.navn
+    
+    def get_absolute_url(self): #one paramter self, redirects user to path
+        return "frontpage" #"list" is the name of the path -> "model/list"
 
     class Meta:  #la til Meta-data i Klasse og CoolUser for å kunne sortere på klassenavn og etternavn
         ordering = ["navn"]

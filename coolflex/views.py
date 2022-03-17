@@ -13,15 +13,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm
+from .forms import NewUserForm, NewKlasseForm
 
 
-klasse_list = []
-for instance in Klasse.objects.all():
-	instance_dict = instance.__dict__
-	instance_dict["grade"] = instance.get_grade()
-	instance_dict["letter"] = instance.get_letter()
-	klasse_list.append(instance_dict)
 
 """
 cool_user_list = [] 
@@ -45,6 +39,15 @@ nicknames = [
 
 @login_required
 def frontpage(request):
+	klasse_list = []
+	user_klasser = Klasse.objects.filter(teacher=request.user)
+	for instance in user_klasser:
+		instance_dict = instance.__dict__
+		instance_dict["grade"] = instance.get_grade()
+		instance_dict["letter"] = instance.get_letter()
+		klasse_list.append(instance_dict)
+
+
 	context = {"klasse_list" : klasse_list}
 	return render(request, "coolflex/frontpage.html", context)
 
@@ -52,7 +55,7 @@ def frontpage(request):
 def klasse(request, klassenavn):
 	klasse = Klasse.objects.get(navn=klassenavn.upper()) #dette kan bli problematisk hvis folk oppretter klasser med navn som ikke har stor bokstav, bør ha begrensinger i models.py
 	coolusers = CoolUser.objects.filter(klasse=klasse)
-	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn}
+	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
 def register_request(request):
@@ -88,6 +91,17 @@ def login_request(request):
 
 
 
-class CoolUserView(ListView):
-	model = CoolUser
-	template_name = 'klasse.html'
+class CreateKlasse(CreateView):
+	model = Klasse
+	template_name="coolflex/klasse_create.html"
+	#fields = "__all__"
+	form_class = NewKlasseForm
+
+class UpdateKlasse(UpdateView):
+	model = Klasse
+	template_name="coolflex/klasse_update.html"
+	fields = "__all__"
+
+class DeleteKlasse(DeleteView):
+	model = Klasse
+	template_name="coolflex/klasse_delete.html"

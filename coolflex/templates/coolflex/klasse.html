@@ -3,6 +3,7 @@
 
 
 {% block content %}
+<a class="logout-button" href="{% url 'logout' %}">Log out</a>
 <h1>{{ klassenavn }}</h1>
 <table>
     <thead>
@@ -28,5 +29,4 @@
       </tr>
     </tbody>
     </table>
-<a class="logout-button" href="{% url 'logout' %}">Log out</a>
 {% endblock %}
