@@ -17,7 +17,8 @@ class NewUserForm(UserCreationForm):
 			user.save()
 		return user
 
-class NewKlasseForm(forms.ModelForm):
+class KlasseForm(forms.ModelForm):
 	class Meta:
 		model = Klasse
 		fields = "__all__"
+

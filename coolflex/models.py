@@ -18,7 +18,7 @@ class Klasse(models.Model):
         return self.navn
     
     def get_absolute_url(self): #one paramter self, redirects user to path
-        return "frontpage" #"list" is the name of the path -> "model/list"
+        return "klasse"
 
     class Meta:  #la til Meta-data i Klasse og CoolUser for å kunne sortere på klassenavn og etternavn
         ordering = ["navn"]

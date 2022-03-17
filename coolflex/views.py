@@ -13,25 +13,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm, NewKlasseForm
+from .forms import NewUserForm, KlasseForm
 
-
-
-"""
-cool_user_list = [] 
-for instance in CoolUser.objects.all():
-	instance_dict = instance.__dict__
-	#instance_dict["klasse"] = Klasse.objects.get(instance.klasse.id).navn
-	instance_dict["klasse"] = instance.klasse
-	cool_user_list.append(instance_dict)
-"""
 
 
 # Create your views here.
 def home(request):
-    nickname = random.choice(nicknames)
-    context = {"name" : nickname }
-    return render(request, "coolflex/home.html", context)
+    return render(request, "coolflex/home.html")
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -39,6 +27,7 @@ nicknames = [
 
 @login_required
 def frontpage(request):
+	name = request.user.username
 	klasse_list = []
 	user_klasser = Klasse.objects.filter(teacher=request.user)
 	for instance in user_klasser:
@@ -46,15 +35,14 @@ def frontpage(request):
 		instance_dict["grade"] = instance.get_grade()
 		instance_dict["letter"] = instance.get_letter()
 		klasse_list.append(instance_dict)
-
-
-	context = {"klasse_list" : klasse_list}
+	context = {"klasse_list" : klasse_list, "name" : name }
 	return render(request, "coolflex/frontpage.html", context)
 
 @login_required
-def klasse(request, klassenavn):
-	klasse = Klasse.objects.get(navn=klassenavn.upper()) #dette kan bli problematisk hvis folk oppretter klasser med navn som ikke har stor bokstav, bør ha begrensinger i models.py
+def klasse(request, pk):
+	klasse = Klasse.objects.get(id=pk) #dette kan bli problematisk hvis folk oppretter klasser med navn som ikke har stor bokstav, bør ha begrensinger i models.py
 	coolusers = CoolUser.objects.filter(klasse=klasse)
+	klassenavn = klasse
 	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
@@ -95,13 +83,15 @@ class CreateKlasse(CreateView):
 	model = Klasse
 	template_name="coolflex/klasse_create.html"
 	#fields = "__all__"
-	form_class = NewKlasseForm
+	form_class = KlasseForm
 
 class UpdateKlasse(UpdateView):
 	model = Klasse
 	template_name="coolflex/klasse_update.html"
 	fields = "__all__"
 
+
 class DeleteKlasse(DeleteView):
 	model = Klasse
 	template_name="coolflex/klasse_delete.html"
+	success_url = 'frontpage'
