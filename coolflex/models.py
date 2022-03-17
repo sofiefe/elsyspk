@@ -16,11 +16,23 @@ class Klasse(models.Model):
     def get_letter(self):
         letter = self.navn[1]
         return letter
+    
+    def __str__(self):
+        return self.navn
+
+    class Meta:  #la til Meta-data i Klasse og CoolUser for å kunne sortere på klassenavn og etternavn
+        ordering = ["navn"]
 
 class CoolUser(models.Model):
     first_name = models.CharField(max_length=20, default="CoolUser")
     last_name = models.CharField(max_length=20, default ="")
-    klasse = models.ForeignKey(Klasse, null=True, on_delete=models.CASCADE)
+    klasse = models.ForeignKey(Klasse, null=True, related_name="cooluser", on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["last_name"]
+    
+    def __str__(self):
+        return self.first_name + " " + self.last_name
 
 class DataCoolBox(models.Model):
     cooluser_id = models.IntegerField(max_length=20)

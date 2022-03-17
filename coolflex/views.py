@@ -1,6 +1,6 @@
 import random
 #from unicodedata import name
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.http import HttpResponse
 from .models import CoolUser, Klasse, User, DataCoolBox
@@ -15,6 +15,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import NewUserForm
 
+
 klasse_list = []
 for instance in Klasse.objects.all():
 	instance_dict = instance.__dict__
@@ -22,13 +23,14 @@ for instance in Klasse.objects.all():
 	instance_dict["letter"] = instance.get_letter()
 	klasse_list.append(instance_dict)
 
+"""
 cool_user_list = [] 
 for instance in CoolUser.objects.all():
 	instance_dict = instance.__dict__
-	#instance_dict["first_name"] = instance.first_name
-	#instance_dict["last_name"] = instance.last_name
-	instance_dict["klasse"] = instance.klasse.navn
+	#instance_dict["klasse"] = Klasse.objects.get(instance.klasse.id).navn
+	instance_dict["klasse"] = instance.klasse
 	cool_user_list.append(instance_dict)
+"""
 
 
 # Create your views here.
@@ -48,7 +50,9 @@ def frontpage(request):
 
 @login_required
 def klasse(request, klassenavn):
-	context = {"klasse_list" : klasse_list, "klassenavn":klassenavn}
+	klasse = Klasse.objects.get(navn=klassenavn.upper()) #dette kan bli problematisk hvis folk oppretter klasser med navn som ikke har stor bokstav, bør ha begrensinger i models.py
+	coolusers = CoolUser.objects.filter(klasse=klasse)
+	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn}
 	return render(request, "coolflex/klasse.html", context)
 
 def register_request(request):
@@ -82,8 +86,8 @@ def login_request(request):
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
-def logout_view(request):
-  logout(request)
-  return redirect("home")
 
 
+class CoolUserView(ListView):
+	model = CoolUser
+	template_name = 'klasse.html'

@@ -15,8 +15,8 @@
     </thead>
     <tbody>
       <tr>
-        {% for user in cool_user_list %}
-        {% if user.klasse|lower == klassenavn %}
+        {% for user in coolusers %}
+        {% if user.klasse|lower == klassenavn|lower %}
         <tr>
             <td>  {{ user.first_name }} </td>
             <td>  {{ user.last_name }} </td>
