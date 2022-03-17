@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block content %}
-<a class="logout-button" href="{% url 'logout' %}">Log out</a> <br>
-<h1>Klasser</h1>
+<h1>User: {{ name }}</h1>
+<h2>Klasser</h2>
+<a href="{% url 'createklasse' %}">Ny klasse</a> <br>
 <table>
     <thead>
       <tr>
-        <th>klassetall</th>
-        <th>klassebokstav</th>
+        <th>tall</th>
+        <th>bokstav</th>
         <th>status</th>
         <th>info</th>
       </tr>
@@ -19,10 +20,13 @@
           <td> {{ klasse.grade }} </td>
           <td> {{ klasse.letter }} </td>
           <td>  </td>
-          <td> <a href="{% url 'klasse' klasse.navn|slugify %}">info</a> </td>
+          <td> <a href="{% url 'klasse' klasse.id %}">info</a> </td>
+          <td> <a href="{% url 'updateklasse' klasse.id %}">oppdater</a> </td>
+          <td> <a href="{% url 'deleteklasse' klasse.id %}">slett</a> </td>
         </tr>
       {% endfor %}
     </tbody>
     </table>
-    <a href="{% url 'createklasse' %}">Ny klasse</a>
+    <a class="logout-button" href="{% url 'logout' %}">Log out</a> <br>
+  
 {% endblock %}
