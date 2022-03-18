@@ -22,3 +22,7 @@ class KlasseForm(forms.ModelForm):
 		model = Klasse
 		fields = "__all__"
 
+class CoolUserForm(forms.ModelForm):
+	class Meta:
+		model = CoolUser
+		fields = "__all__"

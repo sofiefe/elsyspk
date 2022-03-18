@@ -1,7 +1,7 @@
 {% extends "coolflex/base.html" %}
  
 {% block content %}
-<h2>Delete Line</h2>
+<h2>Slette klasse</h2>
 <form method="post">
   {% csrf_token %}
   <p>Are you sure you want to delete "{{ klasse.navn }}"?</p>

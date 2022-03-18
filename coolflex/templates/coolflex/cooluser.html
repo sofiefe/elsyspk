@@ -4,7 +4,7 @@
 
 {% block content %}
 <a class="logout-button" href="{% url 'logout' %}">Log out</a>
-<h1>{{ klassenavn }}</h1>
+<h1>{{ user }}</h1>
 <table>
     <thead>
       <tr>
@@ -16,11 +16,9 @@
     </thead>
     <tbody>
       <tr>
-        {% for user in coolusers %}
-        {% if user.klasse|lower == klassenavn|lower %}
         <tr>
-            <td>  {{ user.first_name }} </td>
-            <td>  {{ user.last_name }} </td>
+            <td> {{ user.first_name }} </td>
+            <td> {{ user.last_name }} </td>
             <td> status </td>
             <td> tidspunkt </td>
             <td> <a href="{% url 'updatecooluser' user.id %}">oppdater</a> </td>
@@ -31,6 +29,5 @@
       </tr>
     </tbody>
     </table>
-    <a href="{% url 'createcooluser' %}">Ny elev</a>
     <br><a href="{% url 'frontpage' %}">Home</a> 
 {% endblock %}
