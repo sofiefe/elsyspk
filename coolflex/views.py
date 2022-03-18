@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm, KlasseForm
+from .forms import NewUserForm, KlasseForm, CoolUserForm
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -40,11 +40,17 @@ def frontpage(request):
 
 @login_required
 def klasse(request, pk):
-	klasse = Klasse.objects.get(id=pk) #dette kan bli problematisk hvis folk oppretter klasser med navn som ikke har stor bokstav, bør ha begrensinger i models.py
+	klasse = Klasse.objects.get(id=pk) 
 	coolusers = CoolUser.objects.filter(klasse=klasse)
 	klassenavn = klasse
 	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
+
+@login_required
+def coolUser(request, pk):
+	cooluser = CoolUser.objects.get(id=pk)
+	context = {'user':cooluser}
+	return render(request, "coolflex/cooluser.html", context)
 
 def register_request(request):
 	if request.method == "POST":
@@ -78,20 +84,35 @@ def login_request(request):
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
 
-
+#CUD for Klasse
 class CreateKlasse(CreateView):
 	model = Klasse
 	template_name="coolflex/klasse_create.html"
-	#fields = "__all__"
 	form_class = KlasseForm
 
 class UpdateKlasse(UpdateView):
 	model = Klasse
 	template_name="coolflex/klasse_update.html"
-	fields = "__all__"
+	form_class = KlasseForm
 
 
 class DeleteKlasse(DeleteView):
 	model = Klasse
 	template_name="coolflex/klasse_delete.html"
+	success_url = 'frontpage'
+
+#CUD for CoolUser
+class CreateCoolUser(CreateView):
+	model = CoolUser
+	template_name="coolflex/cooluser_create.html"
+	form_class = CoolUserForm
+
+class UpdateCoolUser(UpdateView):
+	model = CoolUser
+	template_name="coolflex/cooluser_update.html"
+	form_class = CoolUserForm
+
+class DeleteCoolUser(DeleteView):
+	model = CoolUser
+	template_name="coolflex/cooluser_delete.html"
 	success_url = 'frontpage'
