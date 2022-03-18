@@ -15,15 +15,15 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import NewUserForm, KlasseForm
 
+nicknames = [
+    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
+]
+nickname = random.choice(nicknames)
 
 
 # Create your views here.
 def home(request):
     return render(request, "coolflex/home.html")
-
-nicknames = [
-    "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
-]
 
 @login_required
 def frontpage(request):
