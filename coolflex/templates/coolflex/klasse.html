@@ -12,6 +12,8 @@
         <th>etternavn</th>
         <th>status</th>
         <th>tidspunkt</th>
+        <th>lærer</th>
+        <th>foreldre</th>
       </tr>
     </thead>
     <tbody>
@@ -23,6 +25,8 @@
             <td>  {{ user.last_name }} </td>
             <td> status </td>
             <td> tidspunkt </td>
+            <td>  {{ user.get_teacher }} </td>
+            <td>  {{ user.get_parent }} </td>
             <td> <a href="{% url 'updatecooluser' user.id %}">oppdater</a> </td>
             <td> <a href="{% url 'deletecooluser' user.id %}">slett</a> </td>
         </tr>
