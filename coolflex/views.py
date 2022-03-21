@@ -62,6 +62,7 @@ def get_status(timestamp):
 	if (timestamp_status == 1):
 		return True
 	elif (timestamp_status == 2):
+		#could return something else if neeeded
 		return False
 	else:
 		return False
