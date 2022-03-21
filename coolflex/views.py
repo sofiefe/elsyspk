@@ -55,6 +55,7 @@ def klasse(request, pk):
 	klassenavn = klasse
 	sum, total = calculate_cooluser(coolusers)
 	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn, "sum":sum, "total":total} #context er en ryddig måte å bruke data i template
+	#context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
 @login_required
