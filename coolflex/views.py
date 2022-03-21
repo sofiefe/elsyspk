@@ -89,30 +89,34 @@ class CreateKlasse(CreateView):
 	model = Klasse
 	template_name="coolflex/klasse_create.html"
 	form_class = KlasseForm
+	success_url = reverse_lazy('frontpage')
 
 class UpdateKlasse(UpdateView):
 	model = Klasse
 	template_name="coolflex/klasse_update.html"
 	form_class = KlasseForm
+	success_url = reverse_lazy('frontpage')
 
 
 class DeleteKlasse(DeleteView):
 	model = Klasse
-	template_name="coolflex/klasse_delete.html"
-	success_url = 'frontpage'
+	template_name = "coolflex/klasse_delete.html"
+	success_url = reverse_lazy('frontpage')
 
 #CUD for CoolUser
 class CreateCoolUser(CreateView):
 	model = CoolUser
-	template_name="coolflex/cooluser_create.html"
+	template_name = "coolflex/cooluser_create.html"
 	form_class = CoolUserForm
+	success_url = reverse_lazy('frontpage')
 
 class UpdateCoolUser(UpdateView):
 	model = CoolUser
-	template_name="coolflex/cooluser_update.html"
+	template_name = "coolflex/cooluser_update.html"
 	form_class = CoolUserForm
+	success_url = reverse_lazy('frontpage')
 
 class DeleteCoolUser(DeleteView):
 	model = CoolUser
 	template_name="coolflex/cooluser_delete.html"
-	success_url = 'frontpage'
+	success_url = reverse_lazy('frontpage')

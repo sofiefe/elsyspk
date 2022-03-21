@@ -19,7 +19,7 @@ class Klasse(models.Model):
         return self.navn
     
     def get_absolute_url(self): #one paramter self, redirects user to path
-        return redirect("klasse")
+        return "klasse"
 
     class Meta:  #la til Meta-data i Klasse og CoolUser for å kunne sortere på klassenavn og etternavn
         ordering = ["navn"]
@@ -28,6 +28,8 @@ class CoolUser(models.Model):
     first_name = models.CharField(max_length=20, default="CoolUser")
     last_name = models.CharField(max_length=20, default ="")
     klasse = models.ForeignKey(Klasse, null=True, related_name="cooluser", on_delete=models.CASCADE)
+    #teacher = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    #parent = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["last_name"]
@@ -36,7 +38,13 @@ class CoolUser(models.Model):
         return self.first_name + " " + self.last_name
     
     def get_absolute_url(self): #one paramter self, redirects user to path
-        return redirect("klasse")
+        return "klasse"
+    
+    #def get_parent(self):
+        #return self.parent.username
+    
+    #def get_teacher(self):
+        #return self.teacher.username
 
 class DataCoolBox(models.Model):
     cooluser_id = models.IntegerField(max_length=20)
