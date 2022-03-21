@@ -1,5 +1,5 @@
 import random
-#from unicodedata import name
+from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.http import HttpResponse
@@ -20,6 +20,8 @@ nicknames = [
 ]
 nickname = random.choice(nicknames)
 
+coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
+
 def calculate_cooluser(cooluser_list):
 	sum = 0
 	total = 0
@@ -30,6 +32,20 @@ def calculate_cooluser(cooluser_list):
 		else:
 			total += 1
 	return sum, total
+
+
+#https://gist.github.com/rg3915/db907d7455a4949dbe69
+#added a datetime generator for testing purposes
+def gen_datetime(min_year=2022, max_year=datetime.now().year):
+    # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
+    start = datetime(min_year, datetime.now().month-1, 1, 00, 00, 00)
+    years = max_year - min_year + 1
+    end = start + timedelta(days=30 * years)
+	#end = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
+    return start + (end - start) * random.random()
+
+
+
 
 # Create your views here.
 def home(request):
@@ -53,8 +69,7 @@ def klasse(request, pk):
 	klasse = Klasse.objects.get(id=pk) 
 	coolusers = CoolUser.objects.filter(klasse=klasse)
 	klassenavn = klasse
-	sum, total = calculate_cooluser(coolusers)
-	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn, "sum":sum, "total":total} #context er en ryddig måte å bruke data i template
+	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
 @login_required
