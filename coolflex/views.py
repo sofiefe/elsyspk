@@ -20,6 +20,16 @@ nicknames = [
 ]
 nickname = random.choice(nicknames)
 
+def calculate_cooluser(cooluser_list):
+	sum = 0
+	total = 0
+	for user in cooluser_list:
+		if (user.status == True):
+			sum += 1
+			total += 1
+		else:
+			total += 1
+	return sum, total
 
 # Create your views here.
 def home(request):
@@ -43,13 +53,14 @@ def klasse(request, pk):
 	klasse = Klasse.objects.get(id=pk) 
 	coolusers = CoolUser.objects.filter(klasse=klasse)
 	klassenavn = klasse
-	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
+	sum, total = calculate_cooluser(coolusers)
+	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn, "sum":sum, "total":total} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
 @login_required
 def coolUser(request, pk):
 	cooluser = CoolUser.objects.get(id=pk)
-	context = {'user':cooluser}
+	context = {'cooluser':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
 
 def register_request(request):

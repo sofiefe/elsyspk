@@ -28,8 +28,8 @@ class CoolUser(models.Model):
     first_name = models.CharField(max_length=20, default="CoolUser")
     last_name = models.CharField(max_length=20, default ="")
     klasse = models.ForeignKey(Klasse, null=True, related_name="cooluser", on_delete=models.CASCADE)
-    #teacher = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    #parent = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, blank=True, on_delete=models.CASCADE, related_name="+")
+    parent = models.ForeignKey(User, blank=True, on_delete=models.CASCADE, related_name="+")
 
     class Meta:
         ordering = ["last_name"]
@@ -40,11 +40,11 @@ class CoolUser(models.Model):
     def get_absolute_url(self): #one paramter self, redirects user to path
         return "klasse"
     
-    #def get_parent(self):
-        #return self.parent.username
+    def get_parent(self):
+        return self.parent.username
     
-    #def get_teacher(self):
-        #return self.teacher.username
+    def get_teacher(self):
+        return self.teacher.username
 
 class DataCoolBox(models.Model):
     cooluser_id = models.IntegerField(max_length=20)

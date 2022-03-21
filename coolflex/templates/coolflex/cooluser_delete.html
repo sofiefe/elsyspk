@@ -4,7 +4,7 @@
 <h2>Slette elev</h2>
 <form method="post">
   {% csrf_token %}
-  <p>Are you sure you want to delete "{{ user }}"?</p>
+  <p>Are you sure you want to delete "{{ cooluser }}"?</p>
   <input type="submit" value="Confirm" />
 </form>
 <br><a href="{% url 'frontpage' %}">Home</a> 

@@ -19,7 +19,7 @@
         <tr> 
           <td> {{ klasse.grade }} </td>
           <td> {{ klasse.letter }} </td>
-          <td>  </td>
+          <td> {{ sum }}"/"{{ total }}</td>
           <td> <a href="{% url 'klasse' klasse.id %}">info</a> </td>
           <td> <a href="{% url 'updateklasse' klasse.id %}">oppdater</a> </td>
           <td> <a href="{% url 'deleteklasse' klasse.id %}">slett</a> </td>
