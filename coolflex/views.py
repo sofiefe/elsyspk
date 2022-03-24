@@ -30,12 +30,17 @@ def check_timestamp(timestamp):
 	#valid timeframe of arrival and todays date
 	valid_start_hour = 6
 	valid_end_hour = 10
-	today = datetime.now().date
+	today = int(datetime.now().day)
+	this_month = int(datetime.now().month)
+	this_year = int(datetime.now().year)
 	#date and hour from timestamp
-	hour = timestamp.hour()
-	date = timestamp.date()
+	hour = int(timestamp.hour)
+	day = int(timestamp.day)
+	month = int(timestamp.month)
+	year = int(timestamp.year)
+	#print(str(date) +" " +str(hour))
 	#if sentence to check if valid date
-	if (today == date):
+	if ((today == day) and (this_month == month) and (this_year == year)):
 		#if sentence to check if cooluser arrived in right timeframe
 		if (valid_start_hour<=hour<=valid_end_hour):
 			return 1 #valid timeframe
@@ -45,14 +50,26 @@ def check_timestamp(timestamp):
 		return False
 	
 
-def get_status(timestamp):
-	timestamp_status = check_timestamp(timestamp)
+def get_status(user):
+	box_data_list = []
+	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
+	for data in box_data:
+		box_data_list.append(data)
+	timestamp_status = 0
+	if (len(box_data_list) > 1):
+		timestamp_status = check_timestamp(box_data_list[-1].timestamp)
+	elif (len(box_data_list) == 1):
+		timestamp_status = check_timestamp(box_data_list[0].timestamp)
+
 	if (timestamp_status == 1):
+		print("True")
 		return True
 	elif (timestamp_status == 2):
 		#could return something else if neeeded
+		print("Feil tid")
 		return False
 	else:
+		print("Feil dato")
 		return False
 
 
@@ -60,17 +77,25 @@ def calculate_cooluser(cooluser_list):
 	sum = 0
 	total = 0
 	for user in cooluser_list:
-		id = user.id
-		box_data = DataCoolBox.objects.latest(cooluser_id = id) #søk opp latest
-		timestamp = box_data.timestamp
-		status = get_status(timestamp)
+		#id = user.id
+		#box_data = DataCoolBox.objects.latest(cooluser_id = id) #søk opp latest
+		#timestamp = box_data.timestamp
+		status = get_status(user)
 		if (status == True):
 			sum += 1
 		total += 1
 	return sum, total
 
+def get_status_text(user):
+	status = get_status(user)
+	if (status == True):
+		#print("OK")
+		return "OK"
+	else:
+		#print("MIA")
+		return "MIA"
 
-#TESTING FUNCTIONS
+#TESTING FUNCTIONSgit 
 #-------------------------------------------------------------------------------------------------------------------------
 coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
 
@@ -135,6 +160,8 @@ def frontpage(request):
 		instance_dict = instance.__dict__
 		instance_dict["grade"] = instance.get_grade()
 		instance_dict["letter"] = instance.get_letter()
+		coolusers = CoolUser.objects.filter(klasse=instance)
+		instance_dict["sum"], instance_dict["total"] = calculate_cooluser(coolusers)
 		klasse_list.append(instance_dict)
 	context = {"klasse_list" : klasse_list, "name" : name }
 	return render(request, "coolflex/frontpage.html", context)
@@ -146,6 +173,8 @@ def klasse(request, pk):
 	klasse = Klasse.objects.get(id=pk) 
 	coolusers = CoolUser.objects.filter(klasse=klasse)
 	klassenavn = klasse
+	for user in coolusers:
+		user.status = get_status_text(user)
 	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 

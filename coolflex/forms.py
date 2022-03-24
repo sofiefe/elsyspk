@@ -25,4 +25,4 @@ class KlasseForm(forms.ModelForm):
 class CoolUserForm(forms.ModelForm):
 	class Meta:
 		model = CoolUser
-		fields = "__all__"
+		fields = ("first_name", "last_name", "klasse", "teacher", "parent" )
