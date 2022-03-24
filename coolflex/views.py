@@ -70,7 +70,7 @@ def calculate_cooluser(cooluser_list):
 	return sum, total
 
 
-#TESTING FUNCTIONS
+#TESTING FUNCTIONSgit 
 #-------------------------------------------------------------------------------------------------------------------------
 coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
 
