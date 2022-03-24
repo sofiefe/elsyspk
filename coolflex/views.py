@@ -20,19 +20,7 @@ nicknames = [
 ]
 nickname = random.choice(nicknames)
 
-#TESTING FUNCTIONS
-#-------------------------------------------------------------------------------------------------------------------------
-coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
 
-#https://gist.github.com/rg3915/db907d7455a4949dbe69
-#added a datetime generator for testing purposes
-def gen_datetime(min_year=2022, max_year=datetime.now().year):
-    # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
-    start = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
-    years = max_year - min_year + 1
-    end = start + timedelta(days=30 * years)
-	#end = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
-    return start + (end - start) * random.random()
 
 #HELP FUNCTIONS
 #--------------------------------------------------------------------------------------------------------------------------
@@ -73,13 +61,29 @@ def calculate_cooluser(cooluser_list):
 	total = 0
 	for user in cooluser_list:
 		id = user.id
-		box_data = DataCoolBox.objects.latest(cooluser_id = id)
+		box_data = DataCoolBox.objects.latest(cooluser_id = id) #søk opp latest
 		timestamp = box_data.timestamp
 		status = get_status(timestamp)
 		if (status == True):
 			sum += 1
 		total += 1
 	return sum, total
+
+
+#TESTING FUNCTIONS
+#-------------------------------------------------------------------------------------------------------------------------
+coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
+
+#https://gist.github.com/rg3915/db907d7455a4949dbe69
+#added a datetime generator for testing purposes
+def gen_datetime(min_year=2022, max_year=datetime.now().year):
+    # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
+    start = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
+    years = max_year - min_year + 1
+    end = start + timedelta(days=30 * years)
+	#end = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
+    return start + (end - start) * random.random()
+
 
 
 #VIEWS

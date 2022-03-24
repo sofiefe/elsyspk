@@ -1,1 +1,2 @@
 21.03 Mulige mål: Søkefunksjon av elever og lærere/foreldre basert på username og navn
+I stedet for en "Ny elev" bør det kanskje være en legg til elev funksjon?
