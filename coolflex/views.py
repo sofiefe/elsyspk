@@ -25,6 +25,47 @@ nickname = random.choice(nicknames)
 #HELP FUNCTIONS
 #--------------------------------------------------------------------------------------------------------------------------
 
+def get_timestamp(user):
+	box_data_list = []
+	timestamp = datetime.now() #får int feil hvis ikke, default blir .now()
+	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
+
+	for data in box_data:
+		box_data_list.append(data)
+	
+	if (len(box_data_list) > 1):
+		timestamp = box_data_list[-1].timestamp
+	elif (len(box_data_list) == 1):
+		timestamp = box_data_list[0].timestamp
+
+	return timestamp
+
+def get_coolbox_location(user, box_dict):
+	box_data_list = []
+	box_id = 0
+	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
+
+	for data in box_data:
+		box_data_list.append(data)
+	
+	if (len(box_data_list) > 1):
+		box_id = box_data_list[-1].box_id
+	elif (len(box_data_list) == 1):
+		box_id = box_data_list[0].box_id
+
+	return box_dict.get(box_id)
+
+def get_timestamp_text(user):
+	timestamp = get_timestamp(user)
+	minute = int(timestamp.minute)
+	if (minute <= 9):
+		minute = "0"+str(minute)
+	hour = int(timestamp.hour)
+	day = int(timestamp.day)
+	month = int(timestamp.month)
+	timestamp_text = f"{day}/{month} {hour}:{minute}"
+	return timestamp_text
+
 
 def check_timestamp(timestamp):
 	#valid timeframe of arrival and todays date
@@ -51,16 +92,7 @@ def check_timestamp(timestamp):
 	
 
 def get_status(user):
-	box_data_list = []
-	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
-	for data in box_data:
-		box_data_list.append(data)
-	timestamp_status = 0
-	if (len(box_data_list) > 1):
-		timestamp_status = check_timestamp(box_data_list[-1].timestamp)
-	elif (len(box_data_list) == 1):
-		timestamp_status = check_timestamp(box_data_list[0].timestamp)
-
+	timestamp_status = check_timestamp(get_timestamp(user))
 	if (timestamp_status == 1):
 		print("True")
 		return True
@@ -77,9 +109,6 @@ def calculate_cooluser(cooluser_list):
 	sum = 0
 	total = 0
 	for user in cooluser_list:
-		#id = user.id
-		#box_data = DataCoolBox.objects.latest(cooluser_id = id) #søk opp latest
-		#timestamp = box_data.timestamp
 		status = get_status(user)
 		if (status == True):
 			sum += 1
@@ -94,6 +123,9 @@ def get_status_text(user):
 	else:
 		#print("MIA")
 		return "MIA"
+
+
+
 
 #TESTING FUNCTIONSgit 
 #-------------------------------------------------------------------------------------------------------------------------
@@ -175,6 +207,8 @@ def klasse(request, pk):
 	klassenavn = klasse
 	for user in coolusers:
 		user.status = get_status_text(user)
+		user.location = get_coolbox_location(user, coolbox_dict)
+		user.timestamp = get_timestamp_text(user)
 	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
