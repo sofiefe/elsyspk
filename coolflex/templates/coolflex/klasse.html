@@ -25,8 +25,8 @@
             <td> {{ user.first_name }} </td>
             <td> {{ user.last_name }} </td>
             <td> {{ user.status }} </td>
-            <td> tidspunkt </td>
-            <td> {{ data_box.get_location }} </td>
+            <td> {{ user.id }} </td>
+            <td> {{ user.location }} </td>
             <td> {{ user.get_teacher }} </td>
             <td> {{ user.get_parent }} </td>
             <td> <a href="{% url 'updatecooluser' user.id %}">oppdater</a> </td>

@@ -31,6 +31,8 @@ class CoolUser(models.Model):
     teacher = models.ForeignKey(User, blank=True, on_delete=models.CASCADE, related_name="+")
     parent = models.ForeignKey(User, blank=True, on_delete=models.CASCADE, related_name="+")
     status = models.CharField(max_length=3, default="DEF", blank=True, null=True)
+    timestamp = models.CharField(max_length=20, default="N/A", blank=True, null=True)
+    location = models.CharField(max_length=20, default="N/A", blank=True, null=True)
 
     class Meta:
         ordering = ["last_name"]
@@ -46,6 +48,7 @@ class CoolUser(models.Model):
     
     def get_teacher(self):
         return self.teacher.username
+    
 
 class DataCoolBox(models.Model):
     cooluser_id = models.IntegerField(max_length=20)
