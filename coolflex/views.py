@@ -20,6 +20,18 @@ nicknames = [
 ]
 nickname = random.choice(nicknames)
 
+#TESTING FUNCTIONS
+#-------------------------------------------------------------------------------------------------------------------------
+coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
+
+#https://gist.github.com/rg3915/db907d7455a4949dbe69
+#added a datetime generator for testing purposes
+def gen_datetime(year=datetime.now().year):
+    # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
+    start = datetime(year, datetime.now().month, datetime.now().day, 5, 00, 00)
+    end = start + timedelta(hours=6)
+	#end = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
+    return start + (end - start) * random.random()
 
 
 #HELP FUNCTIONS
@@ -37,6 +49,8 @@ def get_timestamp(user):
 		timestamp = box_data_list[-1].timestamp
 	elif (len(box_data_list) == 1):
 		timestamp = box_data_list[0].timestamp
+	
+	timestamp = gen_datetime()
 
 	return timestamp
 
@@ -57,11 +71,16 @@ def get_coolbox_location(user, box_dict):
 
 def get_timestamp_text(user):
 	timestamp = get_timestamp(user)
+	print(timestamp)
 	minute = int(timestamp.minute)
 	if (minute <= 9):
 		minute = "0"+str(minute)
 	hour = int(timestamp.hour)
+	if (hour <= 9):
+		hour = "0"+str(hour)
 	day = int(timestamp.day)
+	if (day <= 9):
+		day = "0"+str(day)
 	month = int(timestamp.month)
 	timestamp_text = f"{day}/{month} {hour}:{minute}"
 	return timestamp_text
@@ -76,6 +95,7 @@ def check_timestamp(timestamp):
 	this_year = int(datetime.now().year)
 	#date and hour from timestamp
 	hour = int(timestamp.hour)
+	print(hour)
 	day = int(timestamp.day)
 	month = int(timestamp.month)
 	year = int(timestamp.year)
@@ -83,7 +103,7 @@ def check_timestamp(timestamp):
 	#if sentence to check if valid date
 	if ((today == day) and (this_month == month) and (this_year == year)):
 		#if sentence to check if cooluser arrived in right timeframe
-		if (valid_start_hour<=hour<=valid_end_hour):
+		if (valid_start_hour <= hour) and (hour <= valid_end_hour):
 			return 1 #valid timeframe
 		else:
 			return 2 #invalid timeframe, something is up >:/
@@ -94,14 +114,14 @@ def check_timestamp(timestamp):
 def get_status(user):
 	timestamp_status = check_timestamp(get_timestamp(user))
 	if (timestamp_status == 1):
-		print("True")
+		#print("True")
 		return True
 	elif (timestamp_status == 2):
 		#could return something else if neeeded
-		print("Feil tid")
+		#print("Feil tid")
 		return False
 	else:
-		print("Feil dato")
+		#print("Feil dato")
 		return False
 
 
@@ -127,19 +147,6 @@ def get_status_text(user):
 
 
 
-#TESTING FUNCTIONSgit 
-#-------------------------------------------------------------------------------------------------------------------------
-coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
-
-#https://gist.github.com/rg3915/db907d7455a4949dbe69
-#added a datetime generator for testing purposes
-def gen_datetime(min_year=2022, max_year=datetime.now().year):
-    # generate a datetime in format yyyy-mm-dd hh:mm:ss.000000
-    start = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
-    years = max_year - min_year + 1
-    end = start + timedelta(days=30 * years)
-	#end = datetime(min_year, datetime.now().month, 1, 00, 00, 00)
-    return start + (end - start) * random.random()
 
 
 
