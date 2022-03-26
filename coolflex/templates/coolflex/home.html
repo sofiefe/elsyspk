@@ -1,9 +1,12 @@
 {% extends 'coolflex/base.html' %}
 {% load static %}
 {% block content %}
-<h2>Om oss:</h2>
-<p>Beskrivelse av prosjektet og coolflex</p>
+<h2>Velkommen til CoolFlex!</h2>
+<p>Et innovativt system for å gjøre refleks kulere, skoleveien tryggere og Trondheim grønnere!</p>
+<p>Samarbeidsprosjekt mellom ELSYS og Miljøpakken (Vår 2022)</p>
 
-<a class="login-button" href="{% url 'login' %}">Log in</a> <br>
-<a class="button" href="{% url 'register' %}">Register</a>
+<div class="button"><a href="{% url 'login' %}">Logg in</a></div> <br>
+<div class="button"><a href="{% url 'register' %}">Registrer deg</a></div>
+
 {% endblock %}
+

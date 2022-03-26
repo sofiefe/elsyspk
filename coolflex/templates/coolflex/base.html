@@ -5,6 +5,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+
+.button a {
+  background-color: rgb(89, 207, 89);
+  color: black;
+  border: 2px solid rgb(89, 207, 89);
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button a:hover{
+  background-color: rgb(89, 207, 89);
+  color: white;
+}
+
 #coolflex {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -24,7 +40,7 @@
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #04AA6D;
+  background-color: rgb(89, 207, 89);
   color: white;
 }
 * {
@@ -36,6 +52,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1, h2, h3, p {
+  color: rgb(54, 156, 54);
+}
+
 /* Style the side navigation */
 .sidenav {
   height: 100%;
@@ -44,7 +64,7 @@ body {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: rgb(112, 189, 122);
+  background-color: rgb(89, 207, 89);
   overflow-x: hidden;
 }
 
@@ -59,12 +79,13 @@ body {
 
 /* Change color on hover */
 .sidenav a:hover {
-  background-color: rgb(130, 194, 122);
+  background-color: rgb(89, 207, 89);
   color: black;
 }
 
 /* Style the content */
 .content {
+  width: 80%;
   margin-left: 200px;
   padding-left: 20px;
 }
@@ -76,7 +97,7 @@ body {
   {% block sidenav %}
 
   {% endblock %}
-  <a href="#">Om oss</a>
+  <a href="{% url 'info' %}">Om oss</a>
 </div>
 
 <div class="content">

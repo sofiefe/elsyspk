@@ -182,6 +182,9 @@ def login_request(request):
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
 
+def info(request):
+    return render(request, "coolflex/info.html")
+
 #Overview of klasser connected to user, acts as frontpage
 @login_required
 def frontpage(request):
@@ -216,7 +219,7 @@ def klasse(request, pk):
 @login_required
 def coolUser(request, pk):
 	cooluser = CoolUser.objects.get(id=pk)
-	context = {'cooluser':cooluser}
+	context = {'user':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
 
 

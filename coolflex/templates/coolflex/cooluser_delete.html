@@ -7,5 +7,9 @@
   <p>Are you sure you want to delete "{{ cooluser }}"?</p>
   <input type="submit" value="Confirm" />
 </form>
-<br><a href="{% url 'frontpage' %}">Home</a> 
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'frontpage' %}">Hjem</a> 
+<a href="{% url 'logout' %}">Logg ut</a>
 {% endblock %}
