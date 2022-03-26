@@ -71,7 +71,7 @@ def get_coolbox_location(user, box_dict):
 
 def get_timestamp_text(user):
 	timestamp = get_timestamp(user)
-	print(timestamp)
+	print(str(timestamp)+" get timsestamp text")
 	minute = int(timestamp.minute)
 	if (minute <= 9):
 		minute = "0"+str(minute)
@@ -88,6 +88,7 @@ def get_timestamp_text(user):
 
 def check_timestamp(timestamp):
 	#valid timeframe of arrival and todays date
+	print(str(timestamp)+" check timestamp")
 	valid_start_hour = 6
 	valid_end_hour = 10
 	today = int(datetime.now().day)
@@ -95,7 +96,7 @@ def check_timestamp(timestamp):
 	this_year = int(datetime.now().year)
 	#date and hour from timestamp
 	hour = int(timestamp.hour)
-	print(hour)
+	print(str(hour) + " hour")
 	day = int(timestamp.day)
 	month = int(timestamp.month)
 	year = int(timestamp.year)
@@ -103,7 +104,7 @@ def check_timestamp(timestamp):
 	#if sentence to check if valid date
 	if ((today == day) and (this_month == month) and (this_year == year)):
 		#if sentence to check if cooluser arrived in right timeframe
-		if (valid_start_hour <= hour) and (hour <= valid_end_hour):
+		if (valid_start_hour <= hour) and (hour < valid_end_hour):
 			return 1 #valid timeframe
 		else:
 			return 2 #invalid timeframe, something is up >:/
