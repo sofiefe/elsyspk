@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm, KlasseForm, CoolUserForm
+from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -182,6 +182,9 @@ def login_request(request):
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
 
+def info(request):
+    return render(request, "coolflex/info.html")
+
 #Overview of klasser connected to user, acts as frontpage
 @login_required
 def frontpage(request):
@@ -216,7 +219,7 @@ def klasse(request, pk):
 @login_required
 def coolUser(request, pk):
 	cooluser = CoolUser.objects.get(id=pk)
-	context = {'cooluser':cooluser}
+	context = {'user':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
 
 
@@ -248,7 +251,7 @@ class CreateCoolUser(CreateView):
 class UpdateCoolUser(UpdateView):
 	model = CoolUser
 	template_name = "coolflex/cooluser_update.html"
-	form_class = CoolUserForm
+	form_class = UpdateCoolUserForm
 	success_url = reverse_lazy('frontpage')
 
 class DeleteCoolUser(DeleteView):

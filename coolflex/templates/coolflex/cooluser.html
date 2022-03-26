@@ -3,31 +3,36 @@
 
 
 {% block content %}
-<a class="logout-button" href="{% url 'logout' %}">Log out</a>
+<a class="logout-button" href="{% url 'logout' %}">Logg ut</a>
 <h1>{{ user }}</h1>
-<table>
+<table id="coolflex">
     <thead>
       <tr>
-        <th>navn</th>
-        <th>etternavn</th>
-        <th>status</th>
-        <th>tidspunkt</th>
+        <th>Navn</th>
+        <th>Etternavn</th>
+        <th>Status</th>
+        <th>Tidspunkt</th>
+        <th>Sted</th>
+        <th>Foreldre</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <tr>
-            <td> {{ user.first_name }} </td>
-            <td> {{ user.last_name }} </td>
-            <td> status </td>
-            <td> tidspunkt </td>
-            <td> <a href="{% url 'updatecooluser' user.id %}">oppdater</a> </td>
-            <td> <a href="{% url 'deletecooluser' user.id %}">slett</a> </td>
+          <td> {{ user.first_name }} </td>
+          <td> {{ user.last_name }} </td>
+          <td> {{ user.status }} </td>
+          <td> {{ user.timestamp }} </td>
+          <td> {{ user.location }} </td>
+          <td> {{ user.get_parent }} </td>
+          <td> <div class="button"><a href="{% url 'updatecooluser' user.id %}">Oppdater</a></div> </td>
+          <td> <div class="button"><a href="{% url 'deletecooluser' user.id %}">Slett</a></div> </td>
         </tr>
-        {%endif%}
-        {%endfor%}
       </tr>
     </tbody>
     </table>
-    <br><a href="{% url 'frontpage' %}">Home</a> 
+{% endblock %}
+{% block sidenav %}
+<a href="{% url 'frontpage' %}">Hjem</a> 
+<a href="{% url 'logout' %}">Logg ut</a>
 {% endblock %}

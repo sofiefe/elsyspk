@@ -1,0 +1,45 @@
+{% extends 'coolflex/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Om oss</h2>
+<p>
+    Vi er en gruppe sivilingeniør-studenter ved studieprogrammet «Elektronisk systemdesign og innovasjon» på NTNU. 
+    CoolFlex er våres innovasjonsprosjekt. Innovasjonsprosjektet er et to-årig prosjekt med en ny oppdragsgiver for 
+    hvert årskull på studieprogrammet vårt. Vår oppdragsgiver for våren 2022 er Miljøpakken i Trondheim kommune.
+</p>
+
+<p>
+    Trondheim er en by i vekst og befolkningens bevegelsesmønstre består av store deler biltransport. 
+    For å få en by med bedre luft, senke globale utslipp, redusere støy i bybildet og 
+    få tryggere gater, ønskes det å redusere biltransporten betraktelig. For ikke å gå på bekostning av 
+    en sunn befolkning må derfor mulighetene til å gå, sykle og bruke kollektiv trafikk økes. 
+    Miljøpakken er ansvarlige for å lede Trondheims utvikling i denne retningen. 
+</p>
+
+<p>
+    Oppdraget miljøpakken har til innovasjonsprosjektet går ut på å bruke teknologi til å øke antall gående, syklende og 
+    brukere av kollektiv transport og redusere antall kjørende. Vi ønsker å fokusere på skolebarn og utfordringer de og 
+    deres foresatte møter når barna skal gå til skolen. Å gjøre skolebarn mer 
+    synlige om vinteren kan være et slit for de foresatte. Mange barn stiller seg vrange til å bruke 
+    refleks, spesielt da foresatte har en tendens til å ikke gjøre det selv.
+</p>
+<h2>Vår løsning</h2>
+<p>
+    Løsning på problemstillingen våres ble CoolFlex, en helt ny type refleks, utstyrt med LED-lys og sensorer for å 
+    bekrefte trygg ankomst til skolen eller hjemmet. CoolFlex festes til reimene på skolesekken, slik at refleksen alltid er med,
+    uten noe ekstra bry.
+</p>
+
+<p>
+    CoolFlex vil ved bevegelse begynne å lyse opp reimene på sekken ved hjelp av LED-strips. LED-ene vil lyse i et mønster som 
+    skolebarna kan velge og endre selv i en app. Refleksen vil også være linket til en CoolBox, som vil registrere barna når de 
+    passerer boksen. Boksen plasseres på skolen, og barna sin kontaktlærer eller foresatt kan da logge seg inn på nettsiden og 
+    få en full oversikt over hvem som har kommet seg trygt frem til skolen. 
+</p>
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'frontpage' %}">Hjem</a> 
+<a href="{% url 'logout' %}">Logg ut</a>
+{% endblock %}

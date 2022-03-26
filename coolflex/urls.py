@@ -5,6 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
   path("", views.home, name="home"),
+  path("info", views.info, name="info"),
   path("klasse", views.frontpage, name="frontpage"),
   path("create", views.CreateKlasse.as_view(), name="createklasse"),
   path("klasse/<pk>", views.klasse, name="klasse"),

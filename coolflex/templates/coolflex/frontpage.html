@@ -2,31 +2,34 @@
 {% load static %}
 
 {% block content %}
-<h1>User: {{ name }}</h1>
+<h2>Bruker: {{ name }}</h2>
 <h2>Klasser</h2>
-<a href="{% url 'createklasse' %}">Ny klasse</a> <br>
-<table>
+
+<table id="coolflex">
     <thead>
       <tr>
-        <th>tall</th>
-        <th>bokstav</th>
-        <th>status</th>
-        <th>info</th>
+        <th>Klasse</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
         {% for klasse in klasse_list %}
         <tr> 
-          <td> {{ klasse.grade }} </td>
-          <td> {{ klasse.letter }} </td>
+          <td> {{ klasse.grade }}{{ klasse.letter }} </td>
           <td> {{ klasse.sum }}/{{ klasse.total }}</td>
-          <td> <a href="{% url 'klasse' klasse.id %}">info</a> </td>
-          <td> <a href="{% url 'updateklasse' klasse.id %}">oppdater</a> </td>
-          <td> <a href="{% url 'deleteklasse' klasse.id %}">slett</a> </td>
+          <td><div class="button"><a href="{% url 'klasse' klasse.id %}">Info</a> </div></td>
+          <td><div class="button"><a href="{% url 'updateklasse' klasse.id %}">Oppdater</a></div></td>
+          <td><div class="button"><a href="{% url 'deleteklasse' klasse.id %}">Slett</a></div></td>
+          
         </tr>
       {% endfor %}
     </tbody>
     </table>
-    <a class="logout-button" href="{% url 'logout' %}">Log out</a> <br>
+
+    <div class="button"><a href="{% url 'createklasse' %}">Ny klasse</a> <br></div>
   
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'logout' %}">Logg ut</a>
 {% endblock %}

@@ -1,16 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <title>Coolflex</title>
+<title>CoolFlex</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+.button a {
+  background-color: rgb(89, 207, 89);
+  color: black;
+  border: 2px solid rgb(89, 207, 89);
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button a:hover{
+  background-color: rgb(89, 207, 89);
+  color: white;
+}
+
+#coolflex {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+#coolflex td, #coolflex th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#coolflex tr:nth-child(even){background-color: #f2f2f2;}
+
+#coolflex tr:hover {background-color: #ddd;}
+
+#coolflex th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: rgb(89, 207, 89);
+  color: white;
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, p {
+  color: rgb(54, 156, 54);
+}
+
+/* Style the side navigation */
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(89, 207, 89);
+  overflow-x: hidden;
+}
+
+
+/* Side navigation links */
+.sidenav a {
+  color: white;
+  padding: 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color on hover */
+.sidenav a:hover {
+  background-color: rgb(89, 207, 89);
+  color: black;
+}
+
+/* Style the content */
+.content {
+  width: 80%;
+  margin-left: 200px;
+  padding-left: 20px;
+}
+</style>
 </head>
 <body>
-  <h1>Coolflex</h1> 
-  
-  {% block content %}
-  
+
+<div class="sidenav">
+  {% block sidenav %}
+
   {% endblock %}
-  <!--if user is logged in show frontpage-->
-  
+  <a href="{% url 'info' %}">Om oss</a>
+</div>
+
+<div class="content">
+  <h1>CoolFlex</h1>
+  {% block content%}
+
+  {% endblock %}
+</div>
+
 </body>
 </html>
+
+
+
