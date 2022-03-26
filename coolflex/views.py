@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm, KlasseForm, CoolUserForm
+from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -248,7 +248,7 @@ class CreateCoolUser(CreateView):
 class UpdateCoolUser(UpdateView):
 	model = CoolUser
 	template_name = "coolflex/cooluser_update.html"
-	form_class = CoolUserForm
+	form_class = UpdateCoolUserForm
 	success_url = reverse_lazy('frontpage')
 
 class DeleteCoolUser(DeleteView):

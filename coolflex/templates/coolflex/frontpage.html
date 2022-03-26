@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block content %}
-<h1>User: {{ name }}</h1>
+<h2>User: {{ name }}</h2>
 <h2>Klasser</h2>
 <a href="{% url 'createklasse' %}">Ny klasse</a> <br>
-<table>
+<table id="coolflex">
     <thead>
       <tr>
         <th>tall</th>
@@ -20,13 +20,17 @@
           <td> {{ klasse.grade }} </td>
           <td> {{ klasse.letter }} </td>
           <td> {{ klasse.sum }}/{{ klasse.total }}</td>
-          <td> <a href="{% url 'klasse' klasse.id %}">info</a> </td>
-          <td> <a href="{% url 'updateklasse' klasse.id %}">oppdater</a> </td>
-          <td> <a href="{% url 'deleteklasse' klasse.id %}">slett</a> </td>
+          <td> <a class="button" href="{% url 'klasse' klasse.id %}">info</a> </td>
+          <td> <a class="button" href="{% url 'updateklasse' klasse.id %}">oppdater</a> </td>
+          <td> <a class="button" href="{% url 'deleteklasse' klasse.id %}">slett</a> </td>
         </tr>
       {% endfor %}
     </tbody>
     </table>
-    <a class="logout-button" href="{% url 'logout' %}">Log out</a> <br>
+    
   
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'logout' %}">Log out</a> <br>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <a class="logout-button" href="{% url 'logout' %}">Log out</a>
 <h1>{{ klassenavn }}</h1>
-<table>
+<table id="coolflex">
     <thead>
       <tr>
         <th>navn</th>
@@ -38,5 +38,9 @@
     </tbody>
     </table>
     <a href="{% url 'createcooluser' %}">Ny elev</a>
-    <br><a href="{% url 'frontpage' %}">Home</a> 
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'frontpage' %}">Home</a> 
+<a href="{% url 'logout' %}">Log out</a> <br>
 {% endblock %}
