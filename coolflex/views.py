@@ -50,7 +50,7 @@ def get_timestamp(user):
 	elif (len(box_data_list) == 1):
 		timestamp = box_data_list[0].timestamp
 	
-	timestamp = gen_datetime()
+	#timestamp = gen_datetime()
 
 	return timestamp
 
@@ -71,7 +71,6 @@ def get_coolbox_location(user, box_dict):
 
 def get_timestamp_text(user):
 	timestamp = get_timestamp(user)
-	print(str(timestamp)+" get timsestamp text")
 	minute = int(timestamp.minute)
 	if (minute <= 9):
 		minute = "0"+str(minute)
@@ -88,7 +87,6 @@ def get_timestamp_text(user):
 
 def check_timestamp(timestamp):
 	#valid timeframe of arrival and todays date
-	print(str(timestamp)+" check timestamp")
 	valid_start_hour = 6
 	valid_end_hour = 10
 	today = int(datetime.now().day)
@@ -96,18 +94,19 @@ def check_timestamp(timestamp):
 	this_year = int(datetime.now().year)
 	#date and hour from timestamp
 	hour = int(timestamp.hour)
-	print(str(hour) + " hour")
+	minutes = int(timestamp.minute)
 	day = int(timestamp.day)
 	month = int(timestamp.month)
 	year = int(timestamp.year)
-	#print(str(date) +" " +str(hour))
 	#if sentence to check if valid date
 	if ((today == day) and (this_month == month) and (this_year == year)):
 		#if sentence to check if cooluser arrived in right timeframe
 		if (valid_start_hour <= hour) and (hour < valid_end_hour):
 			return 1 #valid timeframe
+		elif (hour >= valid_end_hour):
+			return 2 #late to school
 		else:
-			return 2 #invalid timeframe, something is up >:/
+			return 3 #invalid timeframe, something is up >:/
 	else:
 		return False
 	
@@ -115,14 +114,16 @@ def check_timestamp(timestamp):
 def get_status(user):
 	timestamp_status = check_timestamp(get_timestamp(user))
 	if (timestamp_status == 1):
-		#print("True")
+		print("Valid date and time")
 		return True
 	elif (timestamp_status == 2):
 		#could return something else if neeeded
-		#print("Feil tid")
+		print("Invalid time")
+		return 2
+	elif (timestamp_status == 3):
 		return False
 	else:
-		#print("Feil dato")
+		print("Invalid date")
 		return False
 
 
@@ -131,23 +132,20 @@ def calculate_cooluser(cooluser_list):
 	total = 0
 	for user in cooluser_list:
 		status = get_status(user)
-		if (status == True):
+		if (status == True) or (status == 2):
 			sum += 1
 		total += 1
 	return sum, total
 
+
 def get_status_text(user):
 	status = get_status(user)
 	if (status == True):
-		#print("OK")
 		return "OK"
+	elif (status == 2):
+		return "Sen"
 	else:
-		#print("MIA")
 		return "MIA"
-
-
-
-
 
 
 
@@ -189,7 +187,7 @@ def login_request(request):
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
-
+@login_required
 def info(request):
     return render(request, "coolflex/info.html")
 

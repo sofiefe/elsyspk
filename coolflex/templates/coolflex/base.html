@@ -24,7 +24,7 @@
 #coolflex {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
-  width: 80%;
+  white-space: nowrap;
 }
 
 #coolflex td, #coolflex th {
@@ -85,7 +85,7 @@ h1, h2, h3, p {
 
 /* Style the content */
 .content {
-  width: 80%;
+  /*width: 80%;*/
   margin-left: 200px;
   padding-left: 20px;
 }
@@ -97,7 +97,6 @@ h1, h2, h3, p {
   {% block sidenav %}
 
   {% endblock %}
-  <a href="{% url 'info' %}">Om oss</a>
 </div>
 
 <div class="content">
