@@ -35,7 +35,7 @@ class CoolUser(models.Model):
     location = models.CharField(max_length=20, default="N/A", blank=True, null=True)
 
     class Meta:
-        ordering = ["last_name"]
+        ordering = ["last_name", "first_name"]
     
     def __str__(self):
         return self.first_name + " " + self.last_name
@@ -58,8 +58,5 @@ class DataCoolBox(models.Model):
     class Meta:
         ordering = ["timestamp"]
 
-    def get_location(self):
-        pass
     
-    def __str__(self):
-        return self.id
+    
