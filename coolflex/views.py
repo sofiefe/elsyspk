@@ -274,16 +274,7 @@ class DeleteCoolUser(DeleteView):
 	success_url = reverse_lazy('frontpage')
 
 
-class SearchResultsView(ListView):
-	model = CoolUser
-	template_name = 'search_results.html'
-	
-	def get_queryset(self):  # new
-		query = self.request.GET.get("q")
-		object_list = CoolUser.objects.filter(
-			Q(first_name__icontains=query) | Q(last_name__icontains=query)
-        )
-		return object_list
+
 
 @csrf_exempt
 def search(request): #https://stackoverflow.com/questions/15050571/django-csrf-token-in-search-result-url
