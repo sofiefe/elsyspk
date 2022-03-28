@@ -4,7 +4,11 @@
 {% block content %}
 <h2>Bruker: {{ name }}</h2>
 <h2>Klasser</h2>
-
+<form action="{% url 'search_results' %}" method="get">
+  <p>Søk etter elev:</p>
+  <input name="q" type="text" placeholder="Søk..."><button class="btn btn-primary" type="submit">Søk</button>
+</form>
+<br>
 <table id="coolflex">
     <thead>
       <tr>
