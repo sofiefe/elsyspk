@@ -1,3 +1,5 @@
 21.03 Mulige mål: Søkefunksjon av elever og lærere/foreldre basert på username og navn
 I stedet for en "Ny elev" bør det kanskje være en legg til elev funksjon?
 Når man oppdaterer en indivinduell elev sin lærer så er de fortsatt med i en nå ugyldig skoleklasse
+Få nettsiden live
+Ha en måte å endre instillinger -> lærer kan bestemme tidspunkt

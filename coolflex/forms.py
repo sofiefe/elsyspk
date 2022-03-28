@@ -27,6 +27,11 @@ class CoolUserForm(forms.ModelForm):
 		model = CoolUser
 		fields = ("first_name", "last_name", "klasse", "teacher", "parent" )
 
+class SearchCoolUserForm(forms.ModelForm):
+	class Meta:
+		model = CoolUser
+		fields = ("first_name", "last_name")
+
 class UpdateCoolUserForm(forms.ModelForm):
 	class Meta:
 		model = CoolUser

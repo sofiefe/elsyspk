@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import CoolUser, Klasse, User, DataCoolBox
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -13,7 +13,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm
+from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm, SearchCoolUserForm
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -50,7 +52,7 @@ def get_timestamp(user):
 	elif (len(box_data_list) == 1):
 		timestamp = box_data_list[0].timestamp
 	
-	timestamp = gen_datetime()
+	#timestamp = gen_datetime()
 
 	return timestamp
 
@@ -71,7 +73,7 @@ def get_coolbox_location(user, box_dict):
 
 def get_timestamp_text(user):
 	timestamp = get_timestamp(user)
-	print(str(timestamp)+" get timsestamp text")
+	#print(str(timestamp)+" get timsestamp text")
 	minute = int(timestamp.minute)
 	if (minute <= 9):
 		minute = "0"+str(minute)
@@ -88,7 +90,7 @@ def get_timestamp_text(user):
 
 def check_timestamp(timestamp):
 	#valid timeframe of arrival and todays date
-	print(str(timestamp)+" check timestamp")
+	#print(str(timestamp)+" check timestamp")
 	valid_start_hour = 6
 	valid_end_hour = 10
 	today = int(datetime.now().day)
@@ -96,7 +98,7 @@ def check_timestamp(timestamp):
 	this_year = int(datetime.now().year)
 	#date and hour from timestamp
 	hour = int(timestamp.hour)
-	print(str(hour) + " hour")
+	#print(str(hour) + " hour")
 	day = int(timestamp.day)
 	month = int(timestamp.month)
 	year = int(timestamp.year)
@@ -195,6 +197,7 @@ def info(request):
 
 #Overview of klasser connected to user, acts as frontpage
 @login_required
+@csrf_exempt
 def frontpage(request):
 	name = request.user.username
 	klasse_list = []
@@ -227,6 +230,9 @@ def klasse(request, pk):
 @login_required
 def coolUser(request, pk):
 	cooluser = CoolUser.objects.get(id=pk)
+	cooluser.status = get_status_text(cooluser)
+	cooluser.location = get_coolbox_location(cooluser, coolbox_dict)
+	cooluser.timestamp = get_timestamp_text(cooluser)
 	context = {'user':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
 
@@ -266,3 +272,28 @@ class DeleteCoolUser(DeleteView):
 	model = CoolUser
 	template_name="coolflex/cooluser_delete.html"
 	success_url = reverse_lazy('frontpage')
+
+
+class SearchResultsView(ListView):
+	model = CoolUser
+	template_name = 'search_results.html'
+	
+	def get_queryset(self):  # new
+		query = self.request.GET.get("q")
+		object_list = CoolUser.objects.filter(
+			Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+		return object_list
+
+@csrf_exempt
+def search(request): #https://stackoverflow.com/questions/15050571/django-csrf-token-in-search-result-url
+	query = request.GET.get('q', '')
+	result = []
+	result = CoolUser.objects.filter(
+		Q(first_name__icontains=query) | Q(last_name__icontains=query)
+	)
+	context = {'query':query, 'result':result}
+	return render(request, 'coolflex/search_results.html', context)
+
+
+

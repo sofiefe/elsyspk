@@ -1,0 +1,30 @@
+{% extends 'coolflex/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Søkeresultat</h2>
+<table id="coolflex">
+    <thead>
+      <tr>
+        <th>Navn</th>
+        <th>Etternavn</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for user in result %}
+            <tr>
+                <tr>
+                <td> {{ user.first_name }} </td>
+                <td> {{ user.last_name }} </td>
+                <td> <div class="button"><a href="{% url 'cooluser' user.id %}">Info</a></div> </td>
+                </tr>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+
+{% block sidenav %}
+<a href="{% url 'frontpage' %}">Hjem</a> 
+<a href="{% url 'logout' %}">Logg ut</a>
+{% endblock %}
