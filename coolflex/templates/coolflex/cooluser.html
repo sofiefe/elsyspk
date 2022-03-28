@@ -1,9 +1,6 @@
 {% extends 'coolflex/base.html' %}
 {% load static %}
-
-
 {% block content %}
-<a class="logout-button" href="{% url 'logout' %}">Logg ut</a>
 <h1>{{ user }}</h1>
 <table id="coolflex">
     <thead>
@@ -34,6 +31,5 @@
 {% endblock %}
 {% block sidenav %}
 <a href="{% url 'frontpage' %}">Hjem</a> 
-<a href="{% url 'info' %}">Om oss</a>
 <a href="{% url 'logout' %}">Logg ut</a>
 {% endblock %}

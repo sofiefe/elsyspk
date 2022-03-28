@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import CoolUser, Klasse, User, DataCoolBox
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -14,6 +14,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
 
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
@@ -193,6 +196,7 @@ def info(request):
 
 #Overview of klasser connected to user, acts as frontpage
 @login_required
+@csrf_exempt
 def frontpage(request):
 	name = request.user.username
 	klasse_list = []
@@ -225,9 +229,22 @@ def klasse(request, pk):
 @login_required
 def coolUser(request, pk):
 	cooluser = CoolUser.objects.get(id=pk)
+	cooluser.status = get_status_text(cooluser)
+	cooluser.location = get_coolbox_location(cooluser, coolbox_dict)
+	cooluser.timestamp = get_timestamp_text(cooluser)
 	context = {'user':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
 
+@login_required
+@csrf_exempt
+def search(request): #https://stackoverflow.com/questions/15050571/django-csrf-token-in-search-result-url
+	query = request.GET.get('q', '')
+	result = []
+	result = CoolUser.objects.filter(
+		Q(first_name__icontains=query) | Q(last_name__icontains=query)
+	)
+	context = {'query':query, 'result':result}
+	return render(request, 'coolflex/search_results.html', context)
 
 #CUD for Klasse, using class-based views and forms
 class CreateKlasse(CreateView):
@@ -264,3 +281,4 @@ class DeleteCoolUser(DeleteView):
 	model = CoolUser
 	template_name="coolflex/cooluser_delete.html"
 	success_url = reverse_lazy('frontpage')
+
