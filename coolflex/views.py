@@ -144,11 +144,11 @@ def calculate_cooluser(cooluser_list):
 def get_status_text(user):
 	status = get_status(user)
 	if (status == True):
-		return "OK"
+		return "Møtt opp"
 	elif (status == 2):
-		return "Sen"
+		return "Sent oppmøte"
 	else:
-		return "MIA"
+		return "Ikke møtt opp"
 
 
 
