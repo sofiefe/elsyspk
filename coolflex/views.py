@@ -150,8 +150,20 @@ def get_status_text(user):
 	else:
 		return "Ikke møtt opp"
 
+
 def save_data(string_dict):
-	pass
+	string_dict_strip = string_dict.translate({ord(i): None for i in '{\}'})
+	data_list = string_dict_strip.split(",")
+	cooldata = []
+	for data in data_list:
+		data_sublist = data.split(":")
+		cooldata.append(data_sublist[1])
+	cooluser_id = cooldata[0]
+	box_id = cooldata[1]
+	timestamp = cooldata[2]
+
+	cooldata_object = DataCoolBox(cooluser_id=cooluser_id, box_id=box_id, timestamp=timestamp)
+	cooldata_object.save()
 	
 
 
