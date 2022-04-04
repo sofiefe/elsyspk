@@ -144,12 +144,27 @@ def calculate_cooluser(cooluser_list):
 def get_status_text(user):
 	status = get_status(user)
 	if (status == True):
-		return "OK"
+		return "Møtt opp"
 	elif (status == 2):
-		return "Sen"
+		return "Sent oppmøte"
 	else:
-		return "MIA"
+		return "Ikke møtt opp"
 
+
+def save_data(string_dict):
+	string_dict_strip = string_dict.translate({ord(i): None for i in '{\}'})
+	data_list = string_dict_strip.split(",")
+	cooldata = []
+	for data in data_list:
+		data_sublist = data.split(":")
+		cooldata.append(data_sublist[1])
+	cooluser_id = cooldata[0]
+	box_id = cooldata[1]
+	timestamp = cooldata[2]
+
+	cooldata_object = DataCoolBox(cooluser_id=cooluser_id, box_id=box_id, timestamp=timestamp)
+	cooldata_object.save()
+	
 
 
 #VIEWS
@@ -189,6 +204,12 @@ def login_request(request):
 			messages.error(request,"Invalid username or password.")
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
+
+def save_events_json(request):
+	if request.is_ajax():
+		if request.method == "POST":
+			save_data(request.body)
+	return HttpResponse("OK")
 
 @login_required
 def info(request):
