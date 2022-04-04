@@ -150,6 +150,9 @@ def get_status_text(user):
 	else:
 		return "Ikke møtt opp"
 
+def save_data(string_dict):
+	pass
+	
 
 
 #VIEWS
@@ -189,6 +192,12 @@ def login_request(request):
 			messages.error(request,"Invalid username or password.")
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
+
+def save_events_json(request):
+	if request.is_ajax():
+		if request.method == "POST":
+			save_data(request.body)
+	return HttpResponse("OK")
 
 @login_required
 def info(request):
