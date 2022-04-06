@@ -205,6 +205,7 @@ def login_request(request):
 	form = AuthenticationForm()
 	return render(request=request, template_name="coolflex/login.html", context={"login_form":form})
 
+@csrf_exempt
 def save_events_json(request):
 	if request.is_ajax():
 		if request.method == "POST":
