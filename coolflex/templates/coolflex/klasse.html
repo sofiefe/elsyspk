@@ -13,7 +13,7 @@
         <th>Tidspunkt</th>
         <th>Sted</th>
         <th>Foreldre</th>
-        <th>ID</th>
+        <!--<th>ID</th>-->
       </tr>
     </thead>
     <tbody>
@@ -27,7 +27,7 @@
             <td> {{ user.timestamp }} </td>
             <td> {{ user.location }} </td>
             <td> {{ user.get_parent }} </td>
-            <td> {{ user.id }} </td>
+            <!--<td> {{ user.id }} </td>-->
             <td> <div class="button"><a href="{% url 'updatecooluser' user.id %}">Oppdater</a></div> </td>
             <td> <div class="button"><a href="{% url 'deletecooluser' user.id %}">Slett</a></div> </td>
         </tr>

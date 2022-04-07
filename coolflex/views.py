@@ -249,7 +249,8 @@ def klasse(request, pk):
 		user.status = get_status_text(user)
 		user.location = get_coolbox_location(user, coolbox_dict)
 		user.timestamp = get_timestamp_text(user)
-	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} #context er en ryddig måte å bruke data i template
+	context = {'klasse':klasse, 'coolusers':coolusers, "klassenavn":klassenavn} 
+	#context er en ryddig måte å bruke data i template
 	return render(request, "coolflex/klasse.html", context)
 
 #detail view of each cooluser, added for easier set-up with URLs with CUD
