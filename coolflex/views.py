@@ -45,17 +45,19 @@ def get_timestamp(user):
 	timestamp = datetime.now() #får int feil hvis ikke, default blir .now()
 	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
 
-	for data in box_data:
-		box_data_list.append(data)
-	
-	if (len(box_data_list) > 1):
-		timestamp = box_data_list[-1].timestamp
-	elif (len(box_data_list) == 1):
-		timestamp = box_data_list[0].timestamp
-	
-	#timestamp = gen_datetime()
+	if (box_data == None):
+		return None
+	else:
+		for data in box_data:
+			box_data_list.append(data)
+		if (len(box_data_list) > 1):
+			timestamp = box_data_list[-1].timestamp
+		elif (len(box_data_list) == 1):
+			timestamp = box_data_list[0].timestamp
+		
+		#timestamp = gen_datetime()
 
-	return timestamp
+		return timestamp
 
 def get_coolbox_location(user, box_dict):
 	box_data_list = []
@@ -74,18 +76,21 @@ def get_coolbox_location(user, box_dict):
 
 def get_timestamp_text(user):
 	timestamp = get_timestamp(user)
-	minute = int(timestamp.minute)
-	if (minute <= 9):
-		minute = "0"+str(minute)
-	hour = int(timestamp.hour)
-	if (hour <= 9):
-		hour = "0"+str(hour)
-	day = int(timestamp.day)
-	if (day <= 9):
-		day = "0"+str(day)
-	month = int(timestamp.month)
-	timestamp_text = f"{day}/{month} {hour}:{minute}"
-	return timestamp_text
+	if (timestamp != None):
+		minute = int(timestamp.minute)
+		if (minute <= 9):
+			minute = "0"+str(minute)
+		hour = int(timestamp.hour)
+		if (hour <= 9):
+			hour = "0"+str(hour)
+		day = int(timestamp.day)
+		if (day <= 9):
+			day = "0"+str(day)
+		month = int(timestamp.month)
+		timestamp_text = f"{day}/{month} {hour}:{minute}"
+		return timestamp_text
+	else:
+		return "N/A"
 
 
 def check_timestamp(timestamp):
@@ -117,16 +122,16 @@ def check_timestamp(timestamp):
 def get_status(user):
 	timestamp_status = check_timestamp(get_timestamp(user))
 	if (timestamp_status == 1):
-		print("Valid date and time")
+		#print("Valid date and time")
 		return True
 	elif (timestamp_status == 2):
 		#could return something else if neeeded
-		print("Invalid time")
+		#print("Invalid time")
 		return 2
 	elif (timestamp_status == 3):
 		return False
 	else:
-		print("Invalid date")
+		#print("Invalid date")
 		return False
 
 
@@ -156,7 +161,7 @@ def save_data(string_dict):
 	data_list = string_dict_strip.split(",")
 	cooldata = []
 	for data in data_list:
-		data_sublist = data.split(":")
+		data_sublist = data.split(":", 1)
 		cooldata.append(data_sublist[1])
 	cooluser_id = cooldata[0]
 	box_id = cooldata[1]
