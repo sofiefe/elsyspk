@@ -25,7 +25,7 @@ SECRET_KEY = 'qxt)t**g!e_js7m8*bud1e0z%2&)v*#2^t8(mb26mt1(y2jm_0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "gruppe3.innovasjon.ed.ntnu.no" ]
 
 
 # Application definition
