@@ -25,7 +25,7 @@ nickname = random.choice(nicknames)
 
 #TESTING FUNCTIONS
 #-------------------------------------------------------------------------------------------------------------------------
-coolbox_dict = {1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
+coolbox_dict = {0:"Skole", 1:"Berg", 2:"Nardo", 3:"Singsaker", 4:"Trafikklys"}
 
 #https://gist.github.com/rg3915/db907d7455a4949dbe69
 #added a datetime generator for testing purposes
@@ -40,23 +40,25 @@ def gen_datetime(year=datetime.now().year):
 #HELP FUNCTIONS
 #--------------------------------------------------------------------------------------------------------------------------
 
-def get_timestamp(user):
-	box_data_list = []
-	timestamp = datetime.now() #får int feil hvis ikke, default blir .now()
-	box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
+def get_timestamp(user, register=0):
+	if (register==0):
+		box_data_list = []
+		timestamp = datetime.now() #får int feil hvis ikke, default blir .now()
+		box_data = DataCoolBox.objects.filter(cooluser_id = user.id)
 
-	if (box_data == None):
-		return None
+		if (box_data == None):
+			return None
+		else:
+			for data in box_data:
+				box_data_list.append(data)
+			if (len(box_data_list) > 1):
+				timestamp = box_data_list[-1].timestamp
+			elif (len(box_data_list) == 1):
+				timestamp = box_data_list[0].timestamp
+			#timestamp = gen_datetime()
+			return timestamp
 	else:
-		for data in box_data:
-			box_data_list.append(data)
-		if (len(box_data_list) > 1):
-			timestamp = box_data_list[-1].timestamp
-		elif (len(box_data_list) == 1):
-			timestamp = box_data_list[0].timestamp
-		
-		#timestamp = gen_datetime()
-
+		timestamp = datetime.now()
 		return timestamp
 
 def get_coolbox_location(user, box_dict):
@@ -74,8 +76,8 @@ def get_coolbox_location(user, box_dict):
 
 	return box_dict.get(box_id)
 
-def get_timestamp_text(user):
-	timestamp = get_timestamp(user)
+def get_timestamp_text(user, register=0):
+	timestamp = get_timestamp(user, register)
 	if (timestamp != None):
 		minute = int(timestamp.minute)
 		if (minute <= 9):
@@ -260,8 +262,20 @@ def coolUser(request, pk):
 	cooluser.status = get_status_text(cooluser)
 	cooluser.location = get_coolbox_location(cooluser, coolbox_dict)
 	cooluser.timestamp = get_timestamp_text(cooluser)
+	cooluser.save()
 	context = {'user':cooluser}
 	return render(request, "coolflex/cooluser.html", context)
+
+@login_required
+def register_status(request, pk):
+	cooluser = CoolUser.objects.get(id=pk) 
+	cooluser.status = "Møtt opp"
+	cooluser.location = coolbox_dict.get(0)
+	cooluser.timestamp = get_timestamp_text(cooluser, 1)
+	cooluser.save()
+	klasse = Klasse.objects.get(id=cooluser.klasse)
+	return redirect('klasse', pk=klasse.id)
+
 
 @login_required
 @csrf_exempt

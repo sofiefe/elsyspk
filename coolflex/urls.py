@@ -16,6 +16,7 @@ urlpatterns = [
   path("cooluser/create", views.CreateCoolUser.as_view(), name="createcooluser"),
   path("cooluser/<pk>/update", views.UpdateCoolUser.as_view(), name="updatecooluser"),
   path("cooluser/<pk>/delete", views.DeleteCoolUser.as_view(), name="deletecooluser"),
+  path("register_status", views.register_status, name="register_status"),
   path("search/", views.search, name="search_results"),
   path("register", views.register_request, name="register"),
   path("login", views.login_request, name="login"),
