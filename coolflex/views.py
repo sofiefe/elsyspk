@@ -18,6 +18,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 
+
 nicknames = [
     "bestie", "girly", "queen", "king", "boo", "bud", "buddy", "bro", "broski", "bff", "soulmate", "stinky", "homegirl", "bruh", "fave"
 ]
