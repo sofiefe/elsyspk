@@ -25,7 +25,7 @@ SECRET_KEY = 'qxt)t**g!e_js7m8*bud1e0z%2&)v*#2^t8(mb26mt1(y2jm_0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ "gruppe3.innovasjon.ed.ntnu.no" ]
+ALLOWED_HOSTS = [ "gruppe3.innovasjon.ed.ntnu.no", "localhost", "127.0.0.1" ]
 
 
 # Application definition
@@ -125,3 +125,22 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGOUT_REDIRECT_URL = "home"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

@@ -212,6 +212,7 @@ def login_request(request):
 
 @csrf_exempt
 def save_events_json(request):
+	print("Request nice")
 	if request.is_ajax():
 		if request.method == "POST":
 			save_data(request.body)

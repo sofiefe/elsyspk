@@ -7,9 +7,9 @@
 <style>
 
 .button a {
-  background-color: rgb(89, 207, 89);
-  color: black;
-  border: 2px solid rgb(89, 207, 89);
+  background-color: rgb(2, 195, 204);
+  color: white;
+  border: 2px solid rgb(2, 195, 204);
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
@@ -17,8 +17,8 @@
 }
 
 .button a:hover{
-  background-color: rgb(89, 207, 89);
-  color: white;
+  background-color: rgb(2, 195, 204);
+  color: black;
 }
 
 #coolflex {
@@ -32,7 +32,8 @@
   padding: 8px;
 }
 
-#coolflex tr:nth-child(even){background-color: #f2f2f2;}
+#coolflex tr:nth-child(even){background-color: #fe66c4;}
+#coolflex tr:nth-child(odd){background-color: #d792f4;}
 
 #coolflex tr:hover {background-color: #ddd;}
 
@@ -40,7 +41,7 @@
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: rgb(89, 207, 89);
+  background-color: rgb(2, 195, 204);
   color: white;
 }
 * {
@@ -50,10 +51,15 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(223, 173, 244);
 }
 
-h1, h2, h3, p {
-  color: rgb(54, 156, 54);
+h1, h2, h3{
+  color: rgb(255, 222, 90)
+}
+
+p {
+  color: white;
 }
 
 /* Style the side navigation */
@@ -64,14 +70,14 @@ h1, h2, h3, p {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: rgb(89, 207, 89);
+  background-color: rgb(2, 195, 204);
   overflow-x: hidden;
 }
 
 
 /* Side navigation links */
 .sidenav a {
-  color: white;
+  color: rgb(255, 222, 90);
   padding: 16px;
   text-decoration: none;
   display: block;
@@ -79,7 +85,7 @@ h1, h2, h3, p {
 
 /* Change color on hover */
 .sidenav a:hover {
-  background-color: rgb(89, 207, 89);
+  background-color: rgb(2, 195, 204);
   color: black;
 }
 
@@ -88,9 +94,12 @@ h1, h2, h3, p {
   /*width: 80%;*/
   margin-left: 200px;
   padding-left: 20px;
+  background-color: rgb(223, 173, 244);
+  
 }
 </style>
 </head>
+
 <body>
 
 <div class="sidenav">
@@ -100,7 +109,7 @@ h1, h2, h3, p {
 </div>
 
 <div class="content">
-  <h1>CoolFlex</h1>
+  <h1>CoolSite</h1>
   {% block content%}
 
   {% endblock %}
