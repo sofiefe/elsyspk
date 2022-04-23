@@ -16,6 +16,7 @@ from django.contrib import messages
 from .forms import NewUserForm, KlasseForm, CoolUserForm, UpdateCoolUserForm
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 nicknames = [
@@ -212,10 +213,15 @@ def login_request(request):
 
 @csrf_exempt
 def save_events_json(request):
-	print("Request nice")
-	if request.is_ajax():
-		if request.method == "POST":
-			save_data(request.body)
+	print("Request: \n", request.body)
+	print("Datatype: \n", type(request.body))
+
+	data = DataCoolBox.objects.create(cooluser_id="3", box_id="4", timestamp=datetime.now())
+	if request.method == "POST":
+		print("Post received \n", data.pk)
+		req = json.loads( request.body.decode('utf-8') )
+		data.save
+		print("ID of new object: ", req)
 	return HttpResponse("OK")
 
 @login_required
