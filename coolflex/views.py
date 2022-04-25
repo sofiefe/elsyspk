@@ -213,15 +213,9 @@ def login_request(request):
 
 @csrf_exempt
 def save_events_json(request):
-	print("Request: \n", request.body)
-	print("Datatype: \n", type(request.body))
-
 	data = DataCoolBox.objects.create(cooluser_id="3", box_id="4", timestamp=datetime.now())
 	if request.method == "POST":
-		print("Post received \n", data.pk)
-		req = json.loads( request.body.decode('utf-8') )
 		data.save
-		print("ID of new object: ", req)
 	return HttpResponse("OK")
 
 @login_required
