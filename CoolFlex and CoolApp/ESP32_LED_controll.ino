@@ -1,6 +1,7 @@
-// Arduino Code for ESP32. The code recieves input via bluetooth and use it to control led strips.
-// Code made for ESDA 2 Project for group Hiv3mind. 
-
+// Arduino Code for ESP32. The code recieves input via bluetooth from an app - CoolApp - and use it to control led strips. 
+// The code also send a datapacket to another ESP32 through the use of esp32_now library if available. The datapacket include a hardcoded ID for the given CoolFlex
+// The ESP32 that acts as a receiver will then connect to WiFi and post the ID to CoolSite ( a server, database and internett site)
+// Code made for ESDA 2 Project for group CoolGroup. 
 
 
 #include "BluetoothSerial.h" //library used for bluetooth connection between mobile app and ESP32
@@ -8,22 +9,20 @@
 #include <esp_now.h>    // library used for ESP32 to ESP32 comunication
 #include <WiFi.h>       // library used for ESP32 to ESP32 comunication
 
-uint8_t broadcastAddress[] = {0x58, 0xbf, 0x25, 0x83, 0x1d, 0xac};  // MAC address to CoolBox ESP32
+uint8_t broadcastAddress[] = {0xe8, 0x31, 0xcd, 0xd7, 0x08, 0xc4};  // MAC address to CoolBox ESP32   e8:31:cd:d7:08:c4
+char* myPassword = "myPassword";
 
 typedef struct struct_message {                                     // data sendt from CoolFlex to CoolBox
     int id; // must be unique for each sender board
     bool arrived;
 } struct_message;
 
-
 // Create a struct_message called myData
 struct_message myData;
 
-// Create peer interface
+FASTLED_USING_NAMESPACE
 esp_now_peer_info_t peerInfo;
 
-
-FASTLED_USING_NAMESPACE
 
 // init Class:
 BluetoothSerial ESP_BT; //initialize bluetooth class
@@ -40,7 +39,7 @@ BluetoothSerial ESP_BT; //initialize bluetooth class
 
 
 #define LED_TYPE    APA102 // type of ledstrip (used by fastLED library)
-#define COLOR_ORDER GRB    // Colour order for fastLED
+#define COLOR_ORDER BGR    // Colour order for fastLED
 #define NUM_LEDS    72     // Number of individual leds in the ledstrip
 CRGB leds1[NUM_LEDS];      // Array to store values for each led in the first led strip. 
 CRGB leds2[NUM_LEDS];      // Array to store values for each led in the second led strip.
@@ -51,9 +50,9 @@ CRGB leds4[NUM_LEDS];
 #define BRIGHTNESS          255   //set Brightness
 #define FRAMES_PER_SECOND   120   //set update frequency
 
-char arrayTest[20];               //Array where input from bluetooth is parsed into individual numbers
+char arrayTest[200];               //Array where input from bluetooth is parsed into individual numbers
 String incomingString = "";       //String used to recieve the bluetooth data
-char *strings[6];                 //array where each individual number from incomingString gets its own index. 
+char *strings[10];                 //array where each individual number from incomingString gets its own index. 
 char *ptr = NULL;                 //Used in parsing of IncomingString
 bool dataRecieved = false;        //boolean value for knowing if the ESP32 have recieved data or not
 bool LEDstrip1 = false;           //Boolean value for knowing which LED strip one should change
@@ -79,28 +78,24 @@ unsigned int DEACTIVATION_TIME = 50000;                           // Time of ina
 
 void setup() {
   Serial.begin(115200);
-  ESP_BT.begin("ESP32_Control");  //Naming of ESP32, the name that will show up on mobile device (when connecting to bluetooth)
-
-
+  ESP_BT.begin("CoolFlex");  //Naming of ESP32, the name that will show up on mobile device (when connecting to bluetooth)
+  
   // Set device as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_AP_STA);
 
-     
  // Initialize ESP-NOW
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
   }
+  // Register peer (the CoolBox for the school you go to)
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
 
-   
   // Once ESPNow is successfully Init, we will register for Send CB to
   // get the status of Trasnmitted packet
   esp_now_register_send_cb(OnDataSent);
-
-  // Register peer (the CoolBox for the school you go to)
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;  
-  peerInfo.encrypt = false;
-
+  
   myData.id = 1;                  // Should be equivalent for the given studen's ID in the Database
   myData.arrived = true;
 
@@ -144,9 +139,6 @@ void loop() {
   int LIGHT_INTENSITY_1 = 10*analogRead(LIGHT_SENSOR_PIN_1);             // Current reading from the photocell
   int LIGHT_INTENSITY_2 = analogRead(LIGHT_SENSOR_PIN_2);             // Current reading from the photocell
 
- // Serial.println(ACTIVE);
-
-
   FastLED.show();                                 //Make fastled actually show the leds
   FastLED.delay(1000/FRAMES_PER_SECOND);          //delay in order to make the code not cycle through super fast
 
@@ -155,9 +147,7 @@ void loop() {
   if(pattern_sweep == true){
     EVERY_N_SECONDS( 5 ) { nextPattern();}                      // change patterns periodically if the boolean pattern_sweep is set to true
   }
-
-  EVERY_N_SECONDS(5){
-
+  EVERY_N_SECONDS(15){
     // Add peer        
     if (esp_now_add_peer(&peerInfo) != ESP_OK){
       Serial.println("Failed to add peer");
@@ -167,7 +157,6 @@ void loop() {
     // Send message via ESP-NOW
     if(true){
       esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
-       
       if (result == ESP_OK) {
         Serial.println("Sent with success");
       }
@@ -175,76 +164,48 @@ void loop() {
         Serial.println("Error sending the data");
       } 
     }  
-  /*
-  Serial.println("Light sensors: ");
-  Serial.println(LIGHT_INTENSITY_1);
-  Serial.println(LIGHT_INTENSITY_2);
-  Serial.println("-----------------");  
-  */
   }
 
   EVERY_N_MILLISECONDS(50){
     light += LIGHT_INTENSITY_1;
     light += LIGHT_INTENSITY_2;
-    Serial.println(light);
+    //Serial.println(light);
   }
-
   if(LIGHT_INTENSITY_1 < 3000 || LIGHT_INTENSITY_2 < 3000){
     light = 0;
   }
-
-/*
-  if(LIGHT_INTENSITY_1 > 4000 || LIGHT_INTENSITY_2 > 4000){
-      FastLED.setBrightness(0);                                                                              // set brightness level of every led in the ledstrip
-  } else if((LIGHT_INTENSITY_1 < 4000 && LIGHT_INTENSITY_1 > 3000) || (LIGHT_INTENSITY_2 < 4000 && LIGHT_INTENSITY_2 > 3000)){
-      FastLED.setBrightness(64);
-  } else if((LIGHT_INTENSITY_1 < 3000 && LIGHT_INTENSITY_1 > 2000) || (LIGHT_INTENSITY_2 < 3000 && LIGHT_INTENSITY_2 > 2000)){
-      FastLED.setBrightness(128);
-  } else if((LIGHT_INTENSITY_1 < 2000 && LIGHT_INTENSITY_1 > 1000) || (LIGHT_INTENSITY_2 < 2000 && LIGHT_INTENSITY_2 > 1000)){
-      FastLED.setBrightness(192);
-  } else if((LIGHT_INTENSITY_1 < 1000 || (LIGHT_INTENSITY_2 < 1000))){
-      FastLED.setBrightness(255);
-  }
-  */
-  if (ACTIVE == true && light < 1600000) {   // Check if the sensor registers lights or not and if there is movement
-    
+  
+  if (light < 1600000) {   // ACTIVE == true &&  Check if the sensor registers lights or not and if there is movement
   gPatterns1[gCurrentPatternNumber1]();           //ensures that current pattern are on. 
   gPatterns2[gCurrentPatternNumber2]();           //ensures that current pattern are on. 
   gPatterns3[gCurrentPatternNumber3]();           //ensures that current pattern are on. 
   gPatterns4[gCurrentPatternNumber4]();           //ensures that current pattern are on. 
-  
     if (ESP_BT.available())                           //checks if there is a bluetooth connection
       {
-
-        incomingString = ESP_BT.readString();         // set incomingString to whatever data is recieved from the ESP32 via bluetooth    
+        incomingString = ESP_BT.readString();           // set incomingString to whatever data is recieved from the ESP32 via bluetooth    
         if(incomingString.equals("")){  
           Serial.println("no recieved data from ESP32");
         }else{
-          incomingString.toCharArray(arrayTest, 20);  // takes incomingString and converts it to a charArray.
+          incomingString.toCharArray(arrayTest, 200);    // takes incomingString and converts it to a charArray.
   
-        byte index = 0;                               // index used to determine the number of different numbers recieved from the ESP32 in one data transfer
-        ptr = strtok(arrayTest, ",");                 // split arrayTest based on a given symbol (for this project, comma is used for the symbol)
-
-        while(ptr != NULL ){                          // ptr is set to NULL if strtok() has reached the end
-          strings[index] = ptr;                       // add each individual number to a new array 
-          index++;                                    // incrementing index
-          ptr = strtok(NULL, ",");                    // continuing splitting arrayTest based on the symbol(comma), this continues until the end of arrayTest, when ptr is set to NULL and the while loop ends.
-        }
-
-
-        for (int n = 0; n < index; n++){              // serial print test to check ESP32 recieves and parse the data correctly
-          Serial.print(n);
-          Serial.print("  ");
-          Serial.println(strings[n]);
-        } 
-
- 
-
+          byte index = 0;                               // index used to determine the number of different numbers recieved from the ESP32 in one data transfer
+          ptr = strtok(arrayTest, ",");                 // split arrayTest based on a given symbol (for this project, comma is used for the symbol)
+  
+          while(ptr != NULL ){                          // ptr is set to NULL if strtok() has reached the end
+            strings[index] = ptr;                       // add each individual number to a new array 
+            index++;                                    // incrementing index
+            ptr = strtok(NULL, ",");                    // continuing splitting arrayTest based on the symbol(comma), this continues until the end of arrayTest, when ptr is set to NULL and the while loop ends.
+          }
+          for (int n = 0; n < index; n++){              // serial print test to check ESP32 recieves and parse the data correctly
+            Serial.print(n);
+            Serial.print("  ");
+            Serial.println(strings[n]);
+          } 
+  
         int button = 0;                               // value used to determine which button was pressed in the app
         int value = 0;                                // value used to determine if the user wish to turn a given pattern on or off
         if(incomingString.equals("")){                // checks if testString has been set to recieved data from ESP32
         } else {
-          
           if(atoi(strings[0])%10==1){
             Serial.println("LED strip 4 success: " + atoi(strings[0])%10);
             LEDstrip4 = true;
@@ -258,8 +219,7 @@ void loop() {
           } else {
             Serial.println("LED strip 3 fail: " + (atoi(strings[0])/10U)%10);
             LEDstrip3 = false;
-          }
-          
+          }      
           if((atoi(strings[0])/100U)%10 == 1){
             Serial.println("LED strip 2 success: " + (atoi(strings[0])/100U)%10);
             LEDstrip2 = true;
@@ -278,13 +238,22 @@ void loop() {
             if(atoi(strings[1]) != 9){                // checks if the user want to set individual lights (button = 9) or use a predetirmined pattern (button < 9)
               button = atoi(strings[1])/10;           // 
               value = atoi(strings[1])%10;            //
+              if(strcmp(strings[2], myPassword) != 0){
+                Serial.println("password Mismatch. Recieved | Stored");
+                Serial.println(strings[2]);
+                Serial.println(myPassword);
+                return;
+              }
             } else {
-              button = 9;                             // user wants to set an individual led
-              value = atoi(strings[2]);
-            }
+                button = 9;                             // user wants to set an individual led
+                if(strcmp(strings[6], myPassword) != 0){
+                  Serial.println("password Mismatch free designer. Recieved | Stored");
+                  Serial.println(strings[6]);
+                  Serial.println(myPassword);                
+                }
+              }
         }
-          switch (button) {                             // Switch used to handle all the different user interactions
-           
+          switch (button) {                             // Switch used to handle all the different user interactions   
             case 1:  
               if(LEDstrip1 == true){  
                 if(value == 1){                           // checks if the user want to turn the given pattern on or off
@@ -314,9 +283,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
-             
+              } 
               pattern_sweep = false;                    // turn off pattern_sweeping
               break;
               
@@ -349,8 +316,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }             
               pattern_sweep = false;
               break;
               
@@ -383,8 +349,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }         
               pattern_sweep = false;
               break;
       
@@ -417,8 +382,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }           
               pattern_sweep = false;
               break;   
       
@@ -451,8 +415,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }             
               pattern_sweep = false;
               break;
       
@@ -486,8 +449,7 @@ void loop() {
                 } else {
                   gCurrentPatternNumber1 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }           
               pattern_sweep = false;
               break;
       
@@ -554,42 +516,24 @@ void loop() {
                 } else {
                   gCurrentPatternNumber4 = 8;              // turn the current pattern off  
                 }
-              }
-              
+              }         
               pattern_sweep = false;
               break;
-      
+                
             case 9:  
-              if(LEDstrip1 == true){  
-                if(value == 1){                           // checks if the user want to turn the given pattern on or off
-                  gCurrentPatternNumber1 = 9;              // set the current pattern
-                } else {
-                  gCurrentPatternNumber1 = 8;              // turn the current pattern off  
-                }
+              if(LEDstrip1 == true){   
+                gCurrentPatternNumber1 = 9;              // set the current pattern
               }
               if(LEDstrip2 == true){  
-                if(value == 1){                           // checks if the user want to turn the given pattern on or off
-                  gCurrentPatternNumber2 = 9;              // set the current pattern
-                } else {
-                  gCurrentPatternNumber2 = 8;              // turn the current pattern off  
-                }
+                gCurrentPatternNumber2 = 9;              // set the current pattern
               }
               
               if(LEDstrip3 == true){  
-                if(value == 1){                           // checks if the user want to turn the given pattern on or off
                   gCurrentPatternNumber3 = 9;              // set the current pattern
-                } else {
-                  gCurrentPatternNumber3 = 8;              // turn the current pattern off  
-                }
               }
               if(LEDstrip4 == true){  
-                if(value == 1){                           // checks if the user want to turn the given pattern on or off
                   gCurrentPatternNumber4 = 9;              // set the current pattern
-                } else {
-                  gCurrentPatternNumber4 = 8;              // turn the current pattern off  
-                }
-              }
-              
+              }  
               pattern_sweep = false;   
               break;  
     
@@ -604,37 +548,28 @@ void loop() {
         }
       }// It's dark, turn on lights
     }   else {
-              for(int i = 0; i < NUM_LEDS; i++){
-                leds1[i] =  CHSV(0, 0, 0); 
-                leds2[i] =  CHSV(0, 0, 0); 
-                leds3[i] =  CHSV(0, 0, 0); 
-                leds4[i] =  CHSV(0, 0, 0); 
-              } 
-  }
-
-
+          for(int i = 0; i < NUM_LEDS; i++){
+            leds1[i] =  CHSV(0, 0, 0); 
+            leds2[i] =  CHSV(0, 0, 0); 
+            leds3[i] =  CHSV(0, 0, 0); 
+            leds4[i] =  CHSV(0, 0, 0); 
+          } 
+        }   
+  EVERY_N_MILLISECONDS( 500 ) { 
     TILT_SENSOR_CURRENT_LIST = (round(analogRead(TILT_SENSOR_PINS)/4095));    // Reads all the tilt pins and reduces to binary results in a new list
     if (TILT_SENSOR_CURRENT_LIST != TILT_SENSOR_PREVIOUS_LIST) {              // Checks if the current result is the same as the last for each pin
-          Serial.println("inactivity counter set to millis");
-          TILT_SENSOR_INACTIVITY_COUNTER = millis();                                 // If the results are different, the counter is reset to the current time
-          Serial.println(TILT_SENSOR_INACTIVITY_COUNTER);
-          Serial.println(millis());
+      TILT_SENSOR_INACTIVITY_COUNTER = millis();                                 // If the results are different, the counter is reset to the current time
     }
     ACTIVE = false;
-   // Serial.println(round((analogRead(TILT_SENSOR_PINS)/4095)));
     if (millis() - TILT_SENSOR_INACTIVITY_COUNTER < DEACTIVATION_TIME) {         // Checks if each timer has registered activity within the set timeframe
-    //  Serial.println("bool set to active");
       ACTIVE = true;                                                                // If any sensors have had recent activity, the system stays active
     }
     TILT_SENSOR_PREVIOUS_LIST = TILT_SENSOR_CURRENT_LIST;                     // Writes the current list over the last, before the next iteration
-
-//delay(500);
-
-
+  }
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-  
+
 // add one to the current pattern number, and wrap around at the end
 void nextPattern(){
   if(gCurrentPatternNumber1 > 7){
@@ -827,25 +762,25 @@ void juggle() {
 // set colour for an individual led
 void setColour(){
   if(LEDstrip1 == true){ 
-    leds1[atoi(strings[1])-1].r = atoi(strings[3]);
-    leds1[atoi(strings[1])-1].g = atoi(strings[4]);
-    leds1[atoi(strings[1])-1].b = atoi(strings[5]);    
+    leds1[atoi(strings[2])-1].r = atoi(strings[3]);
+    leds1[atoi(strings[2])-1].g = atoi(strings[4]);
+    leds1[atoi(strings[2])-1].b = atoi(strings[5]);    
   }
   if(LEDstrip2 == true){ 
-    leds2[atoi(strings[1])-1].r = atoi(strings[3]);
-    leds2[atoi(strings[1])-1].g = atoi(strings[4]);
-    leds2[atoi(strings[1])-1].b = atoi(strings[5]);    
+    leds2[atoi(strings[2])-1].r = atoi(strings[3]);
+    leds2[atoi(strings[2])-1].g = atoi(strings[4]);
+    leds2[atoi(strings[2])-1].b = atoi(strings[5]);    
   }
   
   if(LEDstrip3 == true){ 
-    leds3[atoi(strings[1])-1].r = atoi(strings[3]);
-    leds3[atoi(strings[1])-1].g = atoi(strings[4]);
-    leds3[atoi(strings[1])-1].b = atoi(strings[5]);    
+    leds3[atoi(strings[2])-1].r = atoi(strings[3]);
+    leds3[atoi(strings[2])-1].g = atoi(strings[4]);
+    leds3[atoi(strings[2])-1].b = atoi(strings[5]);    
   }
   if(LEDstrip4 == true){ 
-    leds4[atoi(strings[1])-1].r = atoi(strings[3]);
-    leds4[atoi(strings[1])-1].g = atoi(strings[4]);
-    leds4[atoi(strings[1])-1].b = atoi(strings[5]);    
+    leds4[atoi(strings[2])-1].r = atoi(strings[3]);
+    leds4[atoi(strings[2])-1].g = atoi(strings[4]);
+    leds4[atoi(strings[2])-1].b = atoi(strings[5]);    
   } 
 }
 
@@ -856,18 +791,18 @@ void test(){
 // test pattern all leds on, varying colour
 void test1(){
   if(LEDstrip1 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds1[i] =  CHSV(varying_hue, 255, 255); 
     } 
   }
   if(LEDstrip2 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds2[i] =  CHSV(varying_hue, 255, 255); 
     } 
   }
   
   if(LEDstrip3 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds3[i] =  CHSV(varying_hue, 255, 255); 
     } 
   }
@@ -880,35 +815,35 @@ void test1(){
 
 void test2(){
     if(LEDstrip1 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i+=2){
+    for(int i = 0; i < NUM_LEDS; i+=2){
       leds1[i] = CHSV(varying_hue, 255, 255);
     }
-    for(int j = 1; j < NUM_LEDS-1; j+=2){
+    for(int j = 1; j < NUM_LEDS; j+=2){
       leds1[j] = CHSV(varying_hue_2, 255, 255);      
     }
   }
   if(LEDstrip2 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i+=2){
+    for(int i = 0; i < NUM_LEDS; i+=2){
       leds2[i] = CHSV(varying_hue, 255, 255);
     }
-    for(int j = 1; j < NUM_LEDS-1; j+=2){
+    for(int j = 1; j < NUM_LEDS; j+=2){
       leds2[j] = CHSV(varying_hue_2, 255, 255);      
     }
   }
   
   if(LEDstrip3 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i+=2){
+    for(int i = 0; i < NUM_LEDS; i+=2){
       leds3[i] = CHSV(varying_hue, 255, 255);
     }
-    for(int j = 1; j < NUM_LEDS-1; j+=2){
+    for(int j = 1; j < NUM_LEDS; j+=2){
       leds3[j] = CHSV(varying_hue_2, 255, 255);      
     }
   }
   if(LEDstrip4 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i+=2){
+    for(int i = 0; i < NUM_LEDS; i+=2){
       leds4[i] = CHSV(varying_hue, 255, 255);
     }
-    for(int j = 1; j < NUM_LEDS-1; j+=2){
+    for(int j = 1; j < NUM_LEDS; j+=2){
       leds4[j] = CHSV(varying_hue_2, 255, 255);      
     }
   }  
@@ -917,23 +852,23 @@ void test2(){
 // Shutt of pattern, set all leds to off
 void shutOff(){
   if(LEDstrip1 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds1[i] =  CHSV(0, 0, 0); 
     }  
   }
   if(LEDstrip2 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds2[i] =  CHSV(0, 0, 0); 
     }      
   }
   
   if(LEDstrip3 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds3[i] =  CHSV(0, 0, 0); 
     }    
   }
   if(LEDstrip4 == true){ 
-    for(int i = 0; i < NUM_LEDS-1; i++){
+    for(int i = 0; i < NUM_LEDS; i++){
       leds4[i] =  CHSV(0, 0, 0); 
     }   
   }  
